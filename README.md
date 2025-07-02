@@ -83,7 +83,7 @@ I need a better way to track how much money I have for a down payment on a prope
 - [x] `GET /api/accounts` - Get all accounts
 - [x] `POST /api/accounts` - Create account
 - [x] `PUT /api/accounts/[id]` - Update account
-- [ ] `DELETE /api/accounts/[id]` - Delete account
+- [x] `DELETE /api/accounts/[id]` - Delete account
 
 ### Records
 - [x] `GET /api/records` - Get records
