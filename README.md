@@ -1,7 +1,7 @@
 # Egenkapital Tracker
 
-## Prosjektbeskrivelse
-[Beskriv hva appen gjør og hovedmålet]
+## Project description
+I needed a better way of tracking how much money I have for a downpayment for an buying property. I've been using a Google Sheet, however I wanted to move this into a small web application to be able to track stats a bit more over time without having to use a full budget. 
 
 ## Teknisk Stack
 ### Frontend
@@ -19,7 +19,7 @@
 
 ## Funksjonalitet
 ### Kjernefeatures
-- [ ] Kontoer med typer (aksjesparekonto, sparekonto, etc.)
+- [x] Kontoer med typer (aksjesparekonto, sparekonto, etc.)
 - [ ] Records/historikk per konto
 - [ ] Gjeldsoversikt
 - [ ] Inntektshåndtering
@@ -29,7 +29,7 @@
 ### Låneberegning
 - [ ] 5x årsinntekt regel
 - [ ] Forsørgerfradrag
-- [ ] Egenkapitalandel ved boligkjøp
+- [ ] Egenkapitalandel ved boligkjøp (10% minimum)
 - [ ] Eksisterende gjeld
 
 ## Implementeringsplan
@@ -74,15 +74,15 @@
 
 ## API Endpoints
 ### Kontoer
-- [ ] `GET /api/accounts` - Hent alle kontoer
-- [ ] `POST /api/accounts` - Opprett konto
-- [ ] `PUT /api/accounts/[id]` - Oppdater konto
+- [x] `GET /api/accounts` - Hent alle kontoer
+- [x] `POST /api/accounts` - Opprett konto
+- [x] `PUT /api/accounts/[id]` - Oppdater konto
 - [ ] `DELETE /api/accounts/[id]` - Slett konto
 
 ### Records
-- [ ] `GET /api/records` - Hent records
-- [ ] `POST /api/records` - Opprett record
-- [ ] `GET /api/records/[accountId]` - Records for konto
+- [x] `GET /api/records` - Hent records
+- [x] `POST /api/records` - Opprett record
+- [x] `GET /api/records/[accountId]` - Records for konto
 
 ### Gjeld & Inntekt
 - [ ] `GET /api/debt` - Hent gjeld
