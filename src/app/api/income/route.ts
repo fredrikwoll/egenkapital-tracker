@@ -1,6 +1,5 @@
 "use server";
 import { prisma } from '@/lib/prisma'
-import { DebtType } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from "zod";
 
