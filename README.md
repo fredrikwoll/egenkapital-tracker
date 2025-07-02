@@ -93,8 +93,8 @@ I need a better way to track how much money I have for a down payment on a prope
 ### Debt and Income
 - [x] `GET /api/debt` - Get debt
 - [x] `POST /api/debt` - Create debt
-- [ ] `GET /api/income` - Get income
-- [ ] `POST /api/income` - Update income
+- [x] `GET /api/income` - Get income
+- [x] `POST /api/income` - Update income
 
 ### Calculations
 - [ ] `POST /api/calculate/loan-capacity` - Loan capacity
