@@ -26,16 +26,24 @@ export async function POST(request: NextRequest){
 
     try {
         const data = await request.json();
-        const ValidatedData = FormAccountScema.parse(data);
+        const validation = FormAccountScema.safeParse(data);
+
+        if(!validation.success) {
+            return NextResponse.json({
+                error: "Validation failed",
+                details: validation.error.issues
+            }, {status: 400});
+        }
+        const validatedData: AccountFormValidate = validation.data;
         const AccountUpsert = await prisma.account.upsert({
-            where: {id: ValidatedData.id || ''},
+            where: {id: validatedData.id || ''},
             update: {
-                name: ValidatedData.name,
-                type: ValidatedData.type
+                name: validatedData.name,
+                type: validatedData.type
             },
             create: {
-                name: ValidatedData.name,
-                type: ValidatedData.type
+                name: validatedData.name,
+                type: validatedData.type
             }
         });
         return NextResponse.json(AccountUpsert, {status: 200});
