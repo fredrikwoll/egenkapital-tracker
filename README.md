@@ -91,8 +91,8 @@ I need a better way to track how much money I have for a down payment on a prope
 - [x] `GET /api/records/[accountId]` - Records for account
 
 ### Debt and Income
-- [ ] `GET /api/debt` - Get debt
-- [ ] `POST /api/debt` - Create debt
+- [x] `GET /api/debt` - Get debt
+- [x] `POST /api/debt` - Create debt
 - [ ] `GET /api/income` - Get income
 - [ ] `POST /api/income` - Update income
 
