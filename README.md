@@ -1,127 +1,131 @@
 # Egenkapital Tracker
 
 ## Project description
-I needed a better way of tracking how much money I have for a downpayment for an buying property. I've been using a Google Sheet, however I wanted to move this into a small web application to be able to track stats a bit more over time without having to use a full budget. 
+I need a better way to track how much money I have for a down payment on a property. I've been using a Google Sheet; however, I want to move this into a small web application to track stats over time without having to use a full budgeting tool.
 
-## Teknisk Stack
+## Technical Stack
 ### Frontend
-- [ ] NextJS med TypeScript
-- [ ] Tailwind CSS
-- [ ] 
+- NextJS w/TypeScript
+- Tailwind CSS
+- 
 
 ### Backend
-- [ ] NextJS API Routes
-- [ ] PostgreSQL
-- [ ] Prisma ORM
+- NextJS API Routes
+- PostgreSQL
+- Prisma ORM
 
 ### Deployment
-- [ ] PM2 på VPS
+- [ ] PM2 on VPS
 
-## Funksjonalitet
-### Kjernefeatures
-- [x] Kontoer med typer (aksjesparekonto, sparekonto, etc.)
-- [ ] Records/historikk per konto
-- [ ] Gjeldsoversikt
-- [ ] Inntektshåndtering
-- [ ] Lånesimulator
-- [ ] Dashboard med oversikt
+## Functionality
+### Core
+- [ ] Accounts with types (stock savings account, savings account, etc.)
+- [ ] Records/history per account
+- [ ] Debt overview
+- [ ] Income management
+- [ ] Loan simulator
+- [ ] Dashboard with overview
 
-### Låneberegning
-- [ ] 5x årsinntekt regel
-- [ ] Forsørgerfradrag
-- [ ] Egenkapitalandel ved boligkjøp (10% minimum)
-- [ ] Eksisterende gjeld
+### Loan calculation (Norway)
+- [ ] 5x annual income rule
+- [ ] Dependent deduction
+- [ ] Downpayment minimum (10% )
+- [ ] Existing debt.
 
-## Implementeringsplan
-### Fase 1: Grunnlag
-- [ ] NextJS prosjekt setup
-- [ ] Database setup (PostgreSQL + Prisma)
-- [ ] Grunnleggende API struktur
+## Implementation plan
+### Fase 1: Basic
+- [x] NextJS project setup
+- [x] Database setup (PostgreSQL + Prisma)
+- [x] Foundemantal API structure
 
 ### Fase 2: Database & API
-- [ ] Database schema design
-- [ ] API endpoints for kontoer
-- [ ] API endpoints for records
-- [ ] API endpoints for gjeld/inntekt
+- [x] Database schema design
+- [x] API endpoints for accounts
+- [x] API endpoints for records
+- [ ] API endpoints for debt/Income
 
-### Fase 3: Onboarding
-- [ ] Første gangs oppsett flow
-- [ ] Opprett kontoer
-- [ ] Sett startverdier
+### Fase 3: Basic Frontend UI
+- [ ] Figma sketches
+- [ ] Tailwind CSS classes/configuration
+- [ ] Basic component structure
+- [ ] Basic form component
 
-### Fase 4: Dashboard
-- [ ] Oversikt over egenkapital
-- [ ] Gjeld og inntekt visning
-- [ ] Grunnleggende statistikk
+### Fase 4: Onboarding
+- [ ] First time setup flow
+- [ ] Create accounts
+- [ ] Set starting values
 
-### Fase 5: Lånesimulator
-- [ ] Beregningslogikk
-- [ ] Boligkjøp simulator
-- [ ] Resultat visning
+### Fase 5: Dashboard
+- [ ] Overview of equity capital
+- [ ] Debt and inncome overview
+- [ ] Basic stats
 
-### Fase 6: Historikk & Statistikk
-- [ ] Trendvisning
-- [ ] Periode-sammenligning
-- [ ] Grafer og visualisering
+### Fase 6: Loan simulator
+- [ ] Calculation logic
+- [ ] Home purchase simulator
+- [ ] Result display
+
+### Phase 7: History and Statistics
+- [ ] Trend View
+- [ ] Period Comparison
+- [ ] Graphs and Visualization
 
 ## Database Design
-### Tabeller
-- [ ] `accounts` - Kontoer
-- [ ] `account_records` - Historiske verdier
-- [ ] `debt` - Gjeldsposter
-- [ ] `income` - Inntekt
-- [ ] `users` - (fremtidig bruk)
+### Tables
+- [x] `accounts` - Accounts
+- [x] `account_records` - Historical values
+- [x] `debt` - Debt items
+- [x] `income` - Income
+- [ ] `users` - Future use
 
 ## API Endpoints
-### Kontoer
-- [x] `GET /api/accounts` - Hent alle kontoer
-- [x] `POST /api/accounts` - Opprett konto
-- [x] `PUT /api/accounts/[id]` - Oppdater konto
-- [ ] `DELETE /api/accounts/[id]` - Slett konto
+### Accounts
+- [x] `GET /api/accounts` - Get all accounts
+- [x] `POST /api/accounts` - Create account
+- [x] `PUT /api/accounts/[id]` - Update account
+- [ ] `DELETE /api/accounts/[id]` - Delete account
 
 ### Records
-- [x] `GET /api/records` - Hent records
-- [x] `POST /api/records` - Opprett record
-- [x] `GET /api/records/[accountId]` - Records for konto
+- [x] `GET /api/records` - Get records
+- [x] `POST /api/records` - Create record
+- [x] `GET /api/records/[accountId]` - Records for account
 
-### Gjeld & Inntekt
-- [ ] `GET /api/debt` - Hent gjeld
-- [ ] `POST /api/debt` - Opprett gjeld
-- [ ] `GET /api/income` - Hent inntekt
-- [ ] `POST /api/income` - Oppdater inntekt
+### Debt and Income
+- [ ] `GET /api/debt` - Get debt
+- [ ] `POST /api/debt` - Create debt
+- [ ] `GET /api/income` - Get income
+- [ ] `POST /api/income` - Update income
 
-### Beregninger
-- [ ] `POST /api/calculate/loan-capacity` - Lånekapasitet
-- [ ] `GET /api/calculate/net-worth` - Total egenkapital
+### Calculations
+- [ ] `POST /api/calculate/loan-capacity` - Loan capacity
+- [ ] `GET /api/calculate/net-worth` - Total equity
 
 ## Setup/Installation
-### Forutsetninger
-- [ ] Node.js
-- [ ] Yarn
-- [ ] PostgreSQL (DBngin)
+### Prerequisites
+- Node.js
+- Yarn
+- PostgreSQL (DBngin)
 
-### Lokalt oppsett
+### Local Setup
 ```bash
-# Installer dependencies
+# Install dependencies
 yarn install
-
 # Setup database
 npx prisma migrate dev
-
-# Start utviklingsserver
+# Start development server
 yarn dev
 ```
 
 ## Deployment
 ### VPS Setup
-- [ ] PM2 konfiguration
-- [ ] PostgreSQL produksjon
-- [ ] Environment variabler
-- [ ] SSL sertifikat
+- [ ] PM2 configuration
+- [ ] PostgreSQL production
+- [ ] Environment variables
+- [ ] SSL certificate
 
-## Fremtidige Features
-- [ ] Flere brukere/husholdninger
-- [ ] Import fra bank (CSV)
-- [ ] Budsjett-funksjonalitet
-- [ ] Mål og progresjon
-- [ ] Notifikasjoner
+## Future Potential Features
+- [ ] Multiple users/households
+- [ ] Import from bank (CSV)
+- [ ] Budget functionality
+- [ ] Goals and progress
+- [ ] Notifications
