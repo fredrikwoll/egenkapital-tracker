@@ -48,7 +48,7 @@ export async function POST(request: NextRequest){
         });
         return NextResponse.json(AccountUpsert, {status: 200});
     } catch (error) {
-        return NextResponse.json({error: "Could create or update Account", original: (error as Error).message}, {status: 500});
+        return NextResponse.json({error: "Could not create or update Account", original: (error as Error).message}, {status: 500});
 
     }
 
