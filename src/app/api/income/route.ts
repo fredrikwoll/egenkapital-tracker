@@ -44,7 +44,7 @@ export async function POST(request: NextRequest){
         });
         return NextResponse.json(DebtUpsert, {status: 200});
     } catch (error) {
-        return NextResponse.json({error: "Could not create or update Debt", original: (error as Error).message}, {status: 500});
+        return NextResponse.json({error: "Could not create or update Income", original: (error as Error).message}, {status: 500});
 
     }
 

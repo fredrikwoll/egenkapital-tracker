@@ -42,7 +42,7 @@ I need a better way to track how much money I have for a down payment on a prope
 - [x] Database schema design
 - [x] API endpoints for accounts
 - [x] API endpoints for records
-- [ ] API endpoints for debt/Income
+- [x] API endpoints for debt/Income
 
 ### Fase 3: Basic Frontend UI
 - [ ] Figma sketches
