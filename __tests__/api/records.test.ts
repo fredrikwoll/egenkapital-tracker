@@ -1,6 +1,8 @@
 import { describe, it, expect, beforeAll } from 'vitest'
 import { prisma } from '@/lib/prisma'
 import { GET, POST } from '@/app/api/records/route'
+import { GET as GET_AccountRecord } from '@/app/api/records/account/[accountId]/route'
+
 import { NextRequest } from 'next/server'
 import { PATCH } from '@/app/api/records/[id]/route'
 import { Account } from '@prisma/client'
@@ -97,6 +99,27 @@ describe('API Request: records', () => {
         expect(updateAccountRecord).toHaveProperty('accountId', testAccount.id);
         expect(updateAccountRecord).toHaveProperty('amount', 900);
 
+    })
+
+    it('Should return multiple records for given account', async () => {
+
+        const getRequest = new NextRequest(`http://localhost:3000/api/records/test-account-id`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        //Mock params for PATCH request.
+        const mockParams = {
+            params: Promise.resolve({ accountId: testAccount.id })
+        };
+
+        const response = await GET_AccountRecord(getRequest, mockParams);
+
+        const responseData = await response.json();
+        
+        expect(response.status).toBe(200);
+        expect(responseData.length).toBeGreaterThanOrEqual(2);
+        
     })
 
     it('Should return 400 when Amount is missing', async () => {

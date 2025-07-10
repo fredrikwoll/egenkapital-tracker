@@ -9,10 +9,6 @@ import { PATCH } from '@/app/api/accounts/[id]/route'
 
 describe('API Request: Accounts', () => {
 
-/*     afterAll(async () => {
-        await prisma.account.deleteMany();
-    }) */
-
     it('Should return empty array when no accounts exist', async () => {
         const response = await GET();
         const data = await response.json();
@@ -87,9 +83,6 @@ describe('API Request: Accounts', () => {
         const responseUpdate = await PATCH(postUpdateRequest, mockParams);
 
         const updateAccount = await responseUpdate.json();
-
-        console.log('Created account:', createdAccount); // ← Debug
-        console.log('Created account ID:', createdAccount.id); // ← Debug
         
         // Verifiser at account faktisk eksisterer i database
         const checkAccount = await prisma.account.findUnique({
@@ -97,8 +90,6 @@ describe('API Request: Accounts', () => {
         });
         console.log('Account exists in DB:', checkAccount); // ← Debug
 
-            console.log('Update response status:', responseUpdate.status); // ← Debug
-            console.log('Update response body:', updateAccount); // ← Debug
 
         expect(responseUpdate.status).toBe(200);
         expect(updateAccount).toHaveProperty('name', 'New Test Account');
