@@ -1,7 +1,7 @@
 "use server";
 import { prisma } from "@/lib/prisma";
+import { transformAmount } from "@/lib/utils";
 import { NextRequest, NextResponse } from "next/server";
-import { AccountType } from '@prisma/client';
 import { z } from "zod";
 
 type AccountParams = {
@@ -9,25 +9,25 @@ type AccountParams = {
         id: string
     }>
 }
-const FormAccountSchema = z.object({
+const FormIncomeSchema = z.object({
     id: z.string().optional(),
-    name: z.string(),
-    type: z.nativeEnum(AccountType).optional()
+    name: z.string().optional(),
+    amount: z.coerce.number()
 });
 
-type AccountFormValidate = z.infer<typeof FormAccountSchema>
+type AccountFormValidate = z.infer<typeof FormIncomeSchema>
 
 export async function DELETE(request: NextRequest, { params }: AccountParams){
     const { id } = await params;
     console.log(id);
     try {
-        const account = await prisma.account.delete({
+        const result = await prisma.income.delete({
             where: { id }
         });
-        return NextResponse.json(account,{status: 200});
+        return NextResponse.json(transformAmount(result),{status: 200});
         
     } catch (error) {
-        return NextResponse.json({error: "Could not fetch any Accounts", original: (error as Error).message}, {status: 500});
+        return NextResponse.json({error: "Could not fetch any Incomes", original: (error as Error).message}, {status: 500});
     }
 }
 
@@ -37,22 +37,22 @@ export async function DELETE(request: NextRequest, { params }: AccountParams){
 export async function GET(request: NextRequest, { params }: AccountParams){
 
     const { id } = await params;
-    console.log('Looking for account with id:', id); // ← Debug 1
+    console.log('Looking for income with id:', id); // ← Debug 1
     try {
-       const result = await prisma.account.findUnique({
+       const result = await prisma.income.findUnique({
             where: { id }
         });
         console.log('Found result:', result); // ← Debug 2
 
         if (!result) {
             return NextResponse.json({
-                error: `Account with id ${id} not found`
+                error: `Income with id ${id} not found`
             }, { status: 404 }); // ← 404 for "not found"
         }
 
         return NextResponse.json(result,{status: 200}) ;
     } catch (error) {
-        return NextResponse.json({error: `Could not fetch any Account with id: ${id}`, original: (error as Error).message}, {status: 500});
+        return NextResponse.json({error: `Could not fetch any Income with id: ${id}`, original: (error as Error).message}, {status: 500});
     }
 
 }
@@ -64,7 +64,7 @@ export async function PATCH(request: NextRequest, { params }: AccountParams){
     try {
         const data = await request.json();
 
-        const validation = FormAccountSchema.safeParse(data);
+        const validation = FormIncomeSchema.safeParse(data);
 
         if(!validation.success) {
             return NextResponse.json({
@@ -74,17 +74,19 @@ export async function PATCH(request: NextRequest, { params }: AccountParams){
         }
         const validatedData: AccountFormValidate = validation.data;
 
-        const accountUpdate = await prisma.account.update({
+        const {name, amount} = validatedData;
+
+        const result = await prisma.income.update({
             where: { id },
             data: {
-                ...(validatedData.name !== undefined && { name: validatedData.name }),
-                ...(validatedData.type !== undefined && { type: validatedData.type })
+                name,
+                amount
             }
         });
 
-        return NextResponse.json(accountUpdate, {status: 200});
+        return NextResponse.json(transformAmount(result), {status: 200});
     } catch (error) {
-        return NextResponse.json({error: `Could create or update Account with id: ${id}`, original: (error as Error).message}, {status: 500});
+        return NextResponse.json({error: `Could create or update Income with id: ${id}`, original: (error as Error).message}, {status: 500});
 
     }
 

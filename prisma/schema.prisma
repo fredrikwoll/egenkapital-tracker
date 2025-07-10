@@ -44,7 +44,7 @@ model AccountRecord {
   accountId String
   type      RecordType @default(DEPOSIT)
   amount    Decimal  @db.Decimal(12, 2)
-  desciption String?
+  description String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   
@@ -65,6 +65,7 @@ model Debt {
 
 model Income {
   id        String   @id @default(cuid())
+  name      String   @default("Income")
   amount    Decimal  @db.Decimal(12, 2)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

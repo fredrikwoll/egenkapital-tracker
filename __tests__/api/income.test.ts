@@ -20,7 +20,7 @@ describe('API Request: income', () => {
     it('Should return an array with accounts when income exist', async () => {
 
         await prisma.income.create({
-            data: { amount: 25000 }
+            data: { name: 'My income', amount: 25000 }
         });
 
         const response = await GET();
@@ -28,6 +28,7 @@ describe('API Request: income', () => {
 
         expect(data).toBeInstanceOf(Array);
         expect(data).toHaveLength(1);
+        expect(data[0]).toHaveProperty('name', 'My income');
         expect(data[0]).toHaveProperty('amount', 25000);
 
     });
@@ -35,18 +36,19 @@ describe('API Request: income', () => {
     it('Should create new income entry with correct data', async () => {
         const postRequest = new NextRequest('http://localhost:3000/api/income', {
             method: 'POST',
-            body: JSON.stringify({ amount: 25000 }),
+            body: JSON.stringify({ name: 'My income', amount: 25000 }),
             headers: { 'Content-Type': 'application/json' }
         });
 
         const response = await POST(postRequest);
-        const createdAccount = await response.json();
+        const createdIncome = await response.json();
 
         expect(response.status).toBe(200);
-        expect(createdAccount).toHaveProperty('id');
-        expect(createdAccount).toHaveProperty('amount', 25000);
-        expect(createdAccount).toHaveProperty('createdAt');
-        expect(createdAccount).toHaveProperty('updatedAt');
+        expect(createdIncome).toHaveProperty('id');
+        expect(createdIncome).toHaveProperty('name', 'My income');
+        expect(createdIncome).toHaveProperty('amount', 25000);
+        expect(createdIncome).toHaveProperty('createdAt');
+        expect(createdIncome).toHaveProperty('updatedAt');
 
 
     })
@@ -59,9 +61,10 @@ describe('API Request: income', () => {
         });
 
         const responseCreate = await POST(postRequest);
-        const createdAccount = await responseCreate.json();
+        const createdIncome = await responseCreate.json();
         const updateData = {
-            id: createdAccount.id,
+            id: createdIncome.id,
+            name: 'My income',
             amount: 22000
         };
 
@@ -73,7 +76,7 @@ describe('API Request: income', () => {
 
         //Mock params for PATCH request.
         const mockParams = {
-            params: Promise.resolve({ id: createdAccount.id })
+            params: Promise.resolve({ id: createdIncome.id })
         };
 
         const responseUpdate = await PATCH(postUpdateRequest, mockParams);
@@ -81,8 +84,9 @@ describe('API Request: income', () => {
         const updateAccount = await responseUpdate.json();
 
         expect(responseUpdate.status).toBe(200);
+        expect(updateAccount).toHaveProperty('name', 'My income');
         expect(updateAccount).toHaveProperty('amount', 22000);
-        expect(updateAccount).not.toHaveProperty('updatedAt', createdAccount.updatedAt);
+        expect(updateAccount).not.toHaveProperty('updatedAt', createdIncome.updatedAt);
 
     })
 

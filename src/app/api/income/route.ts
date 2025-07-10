@@ -1,5 +1,6 @@
 "use server";
 import { prisma } from '@/lib/prisma'
+import { transformAmount } from '@/lib/utils';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from "zod";
 
@@ -7,24 +8,25 @@ export async function GET(){
 
     try {
         const result = await prisma.income.findMany({});
-        return NextResponse.json(result,{status: 200}) ;
+        return NextResponse.json(transformAmount(result),{status: 200}) ;
     } catch (error) {
         return NextResponse.json({error: "Could not fetch any Income", original: (error as Error).message}, {status: 500});
     }
 
 }
 
-const FormIncomeScema = z.object({
+const FormIncomeSchema = z.object({
     id: z.string().optional(),
-    amount: z.number()
+    name: z.string().optional(),
+    amount: z.coerce.number()
 });
 
-type FormDebtValidate = z.infer<typeof FormIncomeScema>
+type FormDebtValidate = z.infer<typeof FormIncomeSchema>
 export async function POST(request: NextRequest){
 
     try {
         const data = await request.json();
-        const validation = FormIncomeScema.safeParse(data);
+        const validation = FormIncomeSchema.safeParse(data);
 
         if(!validation.success) {
             return NextResponse.json({
@@ -33,16 +35,13 @@ export async function POST(request: NextRequest){
             }, {status: 400});
         }
         const validatedData: FormDebtValidate = validation.data;
-        const DebtUpsert = await prisma.income.upsert({
-            where: {id: validatedData.id || ''},
-            update: {
-                amount: validatedData.amount
-            },
-            create: {
+        const result = await prisma.income.create({
+            data: {
+                name: validatedData.name,
                 amount: validatedData.amount
             }
         });
-        return NextResponse.json(DebtUpsert, {status: 200});
+        return NextResponse.json(transformAmount(result), {status: 200});
     } catch (error) {
         return NextResponse.json({error: "Could not create or update Income", original: (error as Error).message}, {status: 500});
 

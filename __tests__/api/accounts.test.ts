@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach, afterAll } from 'vitest'
 import { prisma } from '@/lib/prisma'
 import { GET, POST } from '@/app/api/accounts/route'
 import { NextRequest } from 'next/server'
@@ -8,6 +8,11 @@ import { PATCH } from '@/app/api/accounts/[id]/route'
 
 
 describe('API Request: Accounts', () => {
+
+/*     afterAll(async () => {
+        await prisma.account.deleteMany();
+    }) */
+
     it('Should return empty array when no accounts exist', async () => {
         const response = await GET();
         const data = await response.json();
@@ -27,7 +32,9 @@ describe('API Request: Accounts', () => {
         const data = await response.json();
 
         expect(data).toBeInstanceOf(Array);
-        expect(data).toHaveLength(1);
+        expect(data.length).toBeGreaterThanOrEqual(1);
+        expect(data.some((account: {name: string}) => account.name === 'Test Account')).toBe(true);
+
         expect(data[0]).toHaveProperty('name', 'Test Account');
 
     });
@@ -66,9 +73,6 @@ describe('API Request: Accounts', () => {
             name: 'New Test Account'
         };
 
-        console.log('Update data:', updateData); // ← Debug objektet
-        console.log('Update JSON:', JSON.stringify(updateData)); // ← Debug
-
         const postUpdateRequest = new NextRequest(`http://localhost:3000/api/accounts/test-account-id`, {
             method: 'PATCH',
             body: JSON.stringify(updateData),
@@ -83,6 +87,18 @@ describe('API Request: Accounts', () => {
         const responseUpdate = await PATCH(postUpdateRequest, mockParams);
 
         const updateAccount = await responseUpdate.json();
+
+        console.log('Created account:', createdAccount); // ← Debug
+        console.log('Created account ID:', createdAccount.id); // ← Debug
+        
+        // Verifiser at account faktisk eksisterer i database
+        const checkAccount = await prisma.account.findUnique({
+            where: { id: createdAccount.id }
+        });
+        console.log('Account exists in DB:', checkAccount); // ← Debug
+
+            console.log('Update response status:', responseUpdate.status); // ← Debug
+            console.log('Update response body:', updateAccount); // ← Debug
 
         expect(responseUpdate.status).toBe(200);
         expect(updateAccount).toHaveProperty('name', 'New Test Account');

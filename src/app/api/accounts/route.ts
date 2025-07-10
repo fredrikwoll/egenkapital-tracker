@@ -15,19 +15,19 @@ export async function GET(){
 
 }
 
-const FormAccountScema = z.object({
+const FormAccountSchema = z.object({
     name: z.string(),
     type: z.nativeEnum(AccountType)
 });
 
-type AccountFormValidate = z.infer<typeof FormAccountScema>
+type AccountFormValidate = z.infer<typeof FormAccountSchema>
 export async function POST(request: NextRequest){
 
     try {
 
         const data = await request.json();
 
-        const validation = FormAccountScema.safeParse(data);
+        const validation = FormAccountSchema.safeParse(data);
 
         if(!validation.success) {
             return NextResponse.json({
@@ -37,13 +37,13 @@ export async function POST(request: NextRequest){
         }
         const validatedData: AccountFormValidate = validation.data;
 
-        const AccountUpsert = await prisma.account.create({
+        const result = await prisma.account.create({
             data: {
                 name: validatedData.name,
                 type: validatedData.type!
             }
         });
-        return NextResponse.json(AccountUpsert, {status: 200});
+        return NextResponse.json(result, {status: 200});
     } catch (error) {
         console.log('Error caught:', error); // ← Debug 5
         return NextResponse.json({error: "Could create or update Account", original: (error as Error).message}, {status: 500});

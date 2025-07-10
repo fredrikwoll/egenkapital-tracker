@@ -67,9 +67,6 @@ describe('API Request: Debt', () => {
             amount: 50000
         };
 
-        console.log('Update data:', updateData); // ← Debug objektet
-        console.log('Update JSON:', JSON.stringify(updateData)); // ← Debug
-
         const postUpdateRequest = new NextRequest(`http://localhost:3000/api/debt/test-account-id`, {
             method: 'PATCH',
             body: JSON.stringify(updateData),

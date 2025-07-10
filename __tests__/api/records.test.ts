@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeAll } from 'vitest'
 import { prisma } from '@/lib/prisma'
 import { GET, POST } from '@/app/api/records/route'
 import { NextRequest } from 'next/server'
@@ -9,13 +9,12 @@ import { Account } from '@prisma/client'
 
 
 describe('API Request: records', () => {
-    let sharedAccount: Account;
+    let testAccount: Account;
 
-    //Setting up a sharedAccount to test AccountRecords.
-    beforeEach(async () => {
-        sharedAccount = await prisma.account.create({
-            data: { name: 'Test Account', type: 'SAVINGS' }
-        })
+    //Setting up a testAccount to test AccountRecords.
+    beforeAll(async () => {
+        testAccount = await prisma.account.create({
+        data: { name: 'Test Account', type: 'SAVINGS' }});
     });
 
     it('Should return empty array when no records exist', async () => {
@@ -30,7 +29,7 @@ describe('API Request: records', () => {
     it('Should return an array with records when records exist', async () => {
 
         await prisma.accountRecord.create({
-            data: { accountId: sharedAccount.id, amount: 1250 }
+            data: { accountId: testAccount.id, type: 'DEPOSIT', amount: 1250 }
         });
 
         const response = await GET();
@@ -38,7 +37,8 @@ describe('API Request: records', () => {
 
         expect(data).toBeInstanceOf(Array);
         expect(data).toHaveLength(1);
-        expect(data[0]).toHaveProperty('accountId', sharedAccount.id);
+        expect(data[0]).toHaveProperty('accountId', testAccount.id);
+        expect(data[0]).toHaveProperty('type','DEPOSIT');
         expect(data[0]).toHaveProperty('amount', 1250);
 
     });
@@ -47,16 +47,17 @@ describe('API Request: records', () => {
 
         const postRequest = new NextRequest('http://localhost:3000/api/records', {
             method: 'POST',
-            body: JSON.stringify({ accountId: sharedAccount.id, amount: 1500 }),
+            body: JSON.stringify({ accountId: testAccount.id, type: 'DEPOSIT', amount: 1500 }),
             headers: { 'Content-Type': 'application/json' }
         });
 
         const responseAccountRecord = await POST(postRequest);
         const createdAccountRecord = await responseAccountRecord.json();
-
-        expect(createdAccountRecord.status).toBe(200);
+        
+        expect(responseAccountRecord.status).toBe(200);
         expect(createdAccountRecord).toHaveProperty('id');
-        expect(createdAccountRecord).toHaveProperty('accountId', sharedAccount.id);
+        expect(createdAccountRecord).toHaveProperty('accountId', testAccount.id);
+        expect(createdAccountRecord).toHaveProperty('type', 'DEPOSIT');
         expect(createdAccountRecord).toHaveProperty('amount', 1500);
         expect(createdAccountRecord).toHaveProperty('createdAt');
 
@@ -65,7 +66,7 @@ describe('API Request: records', () => {
     it('Should update existing account when id is provided', async () => {
         const postRequest = new NextRequest('http://localhost:3000/api/records', {
             method: 'POST',
-            body: JSON.stringify({ accountId: sharedAccount.id, amount: 500 }),
+            body: JSON.stringify({ accountId: testAccount.id, type: 'DEPOSIT', amount: 500 }),
             headers: { 'Content-Type': 'application/json' }
         });
 
@@ -90,18 +91,18 @@ describe('API Request: records', () => {
         const responseUpdate = await PATCH(postUpdateRequest, mockParams);
 
         const updateAccountRecord = await responseUpdate.json();
-
+        
         expect(responseUpdate.status).toBe(200);
         expect(updateAccountRecord).toHaveProperty('id', createdAccountRecord.id)
-        expect(updateAccountRecord).toHaveProperty('accountId', sharedAccount.id);
-        expect(updateAccountRecord).not.toHaveProperty('amount', 900);
+        expect(updateAccountRecord).toHaveProperty('accountId', testAccount.id);
+        expect(updateAccountRecord).toHaveProperty('amount', 900);
 
     })
 
     it('Should return 400 when Amount is missing', async () => {
         const postRequest = new NextRequest('http://localhost:3000/api/records', {
             method: 'POST',
-            body: JSON.stringify({ accountId: sharedAccount.id }),
+            body: JSON.stringify({ accountId: testAccount.id }),
             headers: { 'Content-Type': 'application/json' }
         });
 
