@@ -82,19 +82,30 @@ I need a better way to track how much money I have for a down payment on a prope
 ### Accounts
 - [x] `GET /api/accounts` - Get all accounts
 - [x] `POST /api/accounts` - Create account
-- [x] `PUT /api/accounts/[id]` - Update account
+- [x] `GET /api/accounts/[id]` - Get specific account
+- [x] `PATCH /api/accounts/[id]` - Update account
 - [x] `DELETE /api/accounts/[id]` - Delete account
 
 ### Records
-- [x] `GET /api/records` - Get records
+- [x] `GET /api/records` - Get all records
 - [x] `POST /api/records` - Create record
-- [x] `GET /api/records/[accountId]` - Records for account
+- [x] `GET /api/records/account/[accountId]` - Records for account
+- [x] `PATCH /api/records/[id]` - Update record
+- [x] `DELETE /api/records/[id]` - Delete record
 
-### Debt and Income
-- [x] `GET /api/debt` - Get debt
+### Debt
+- [x] `GET /api/debt` - Get all debt
 - [x] `POST /api/debt` - Create debt
-- [x] `GET /api/income` - Get income
-- [x] `POST /api/income` - Update income
+- [x] `GET /api/debt/[id]` - Get specific debt
+- [x] `PATCH /api/debt/[id]` - Update debt
+- [x] `DELETE /api/debt/[id]` - Delete debt
+
+### Income
+- [x] `GET /api/income` - Get all income
+- [x] `POST /api/income` - Create income
+- [x] `GET /api/income/[id]` - Get specific income
+- [x] `PATCH /api/income/[id]` - Update income
+- [x] `DELETE /api/income/[id]` - Delete income
 
 ### Calculations
 - [ ] `POST /api/calculate/loan-capacity` - Loan capacity
