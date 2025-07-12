@@ -45,7 +45,7 @@ I need a better way to track how much money I have for a down payment on a prope
 - [x] API endpoints for debt/Income
 
 ### Fase 3: Basic Frontend UI
-- [ ] Figma sketches
+- [x] Figma sketches [link to sketch v1.0](https://www.figma.com/design/WmzM4su07X19E3ESEGzRSV/EquityTracker?node-id=0-1&t=k68FtIsCHqWX7rgE-1)
 - [ ] Tailwind CSS classes/configuration
 - [ ] Basic component structure
 - [ ] Basic form component
