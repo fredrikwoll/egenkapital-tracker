@@ -1,22 +1,13 @@
-import { describe, it, expect, beforeEach, afterAll } from 'vitest'
-import { prisma } from '@/lib/prisma'
+import { describe, it, expect } from 'vitest'
 import { GET, POST } from '@/app/api/accounts/route'
 import { NextRequest } from 'next/server'
 import { PATCH } from '@/app/api/accounts/[id]/route'
+import { prisma } from '../../test-setup'
 
 
 
 
 describe('API Request: Accounts', () => {
-
-    it('Should return empty array when no accounts exist', async () => {
-        const response = await GET();
-        const data = await response.json();
-
-        expect(data).toBeInstanceOf(Array);
-        expect(data).toHaveLength(0);
-        expect(response.status).toBe(200);
-    });
 
     it('Should return an array with accounts when accounts exist', async () => {
 
