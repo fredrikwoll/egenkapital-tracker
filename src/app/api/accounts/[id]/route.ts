@@ -50,7 +50,19 @@ export async function GET(request: NextRequest, { params }: AccountParams){
             }, { status: 404 }); // ← 404 for "not found"
         }
 
-        return NextResponse.json(result,{status: 200}) ;
+        const count = await prisma.accountRecord.aggregate({
+            _sum: {
+                amount: true
+            },
+            where: {
+                accountId: id
+            }
+        });
+        
+        const updatedResult = {...result, totaltAmount: count._sum.amount}
+
+
+        return NextResponse.json(updatedResult,{status: 200}) ;
     } catch (error) {
         return NextResponse.json({error: `Could not fetch any Account with id: ${id}`, original: (error as Error).message}, {status: 500});
     }

@@ -4,11 +4,29 @@ import { AccountType } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from "zod";
 
+
 export async function GET(){
 
     try {
+        
         const result = await prisma.account.findMany({});
-        return NextResponse.json(result,{status: 200}) ;
+
+        const count = await prisma.accountRecord.groupBy({
+            by: ['accountId'],
+            _sum: {
+                amount: true
+            },
+        });
+
+        const lookupMap = new Map();
+
+        //setup lookup map for totalAmounts
+        count.forEach(record => lookupMap.set(record.accountId, record._sum.amount));
+
+        //Adding totalAmount to the array of accounts
+        const updatedResult = result.map(account => ({...account, totalAmount: lookupMap.get(account.id) || 0}));
+    
+        return NextResponse.json(updatedResult,{status: 200}) ;
     } catch (error) {
         return NextResponse.json({error: "Could not fetch any Accounts", original: (error as Error).message}, {status: 500});
     }
