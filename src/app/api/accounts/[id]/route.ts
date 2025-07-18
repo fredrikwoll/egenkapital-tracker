@@ -59,7 +59,7 @@ export async function GET(request: NextRequest, { params }: AccountParams){
             }
         });
         
-        const updatedResult = {...result, totaltAmount: count._sum.amount}
+        const updatedResult = {...result, totaltAmount: count._sum.amount?.toNumber() || 0}
 
 
         return NextResponse.json(updatedResult,{status: 200}) ;

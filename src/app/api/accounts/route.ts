@@ -24,7 +24,7 @@ export async function GET(){
         count.forEach(record => lookupMap.set(record.accountId, record._sum.amount));
 
         //Adding totalAmount to the array of accounts
-        const updatedResult = result.map(account => ({...account, totalAmount: lookupMap.get(account.id) || 0}));
+        const updatedResult = result.map(account => ({...account, totalAmount: lookupMap.get(account.id).toNumber() || 0}));
     
         return NextResponse.json(updatedResult,{status: 200}) ;
     } catch (error) {
