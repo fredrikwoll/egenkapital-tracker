@@ -1,6 +1,7 @@
 
 import { Account } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
+import AccountsList from './_components/AccountsList';
 
 
 async function getData(): Promise<Account[]> {
@@ -17,6 +18,7 @@ export default async function AccountsPage() {
     return (
     <div className="p-6">
         <h1 className="text-2xl font-bold mb-6">Accounts</h1>
+        <AccountsList initialData={data} />
     </div>
     );
 }
