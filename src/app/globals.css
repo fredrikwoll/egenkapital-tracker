@@ -1,8 +1,33 @@
 @import "tailwindcss";
 
+@theme {
+  --color-main: #0F172A;
+  --color-card: #1E293B;
+  --color-border: #334155;
+  
+  /* Flat naming for nested colors */
+  --color-text-primary: #F1F5F9;
+  --color-text-secondary: #CBD5E1;
+  --color-text-muted: #64748B;
+  
+  --color-positive: #10B981;
+  --color-positive-hover: #059669;
+  --color-negative: #EF4444;
+  --color-negative-hover: #DC2626;
+  
+  --color-primary: #3B82F6;
+  --color-primary-hover: #2563EB;
+  --color-warning: #F59E0B;
+  --color-warning-hover: #D97706;
+  
+  --color-input-bg: #374151;
+  --color-input-disabled: #4B5563;
+  --color-input-placeholder: #6B7280;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: var(--color-main);
+  --foreground: var(--color-text-primary);  /* ← Bruk din custom farge */
 }
 
 @theme inline {
@@ -10,13 +35,6 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
