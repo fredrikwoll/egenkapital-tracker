@@ -1,7 +1,7 @@
 
 import { Account } from '@prisma/client';
+import AccountsList from './_components/AccountsList'
 import { prisma } from '@/lib/prisma';
-import AccountsList from './_components/AccountsList';
 
 
 async function getData(): Promise<Account[]> {
