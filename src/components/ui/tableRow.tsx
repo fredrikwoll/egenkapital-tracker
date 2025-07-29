@@ -1,19 +1,30 @@
+import { T } from "vitest/dist/chunks/reporters.d.BFLkQcL6.js";
 import Title from "./Title";
 
-type BodyColumn = {
-    label: string;
-    className: string;
-}
+export type Column<T> = {
+  key: keyof T | string;
+  className: string;
+  transform?: (value: any, row: T) => string;
+};
 
-const TableRow = ({ rows }: { rows: BodyColumn[] }) => {
+type TableRowProps<T> = {
+  data: T;
+  columns: Column<T>[];
+};
+
+const TableRow = <T,>({ data, columns }: TableRowProps<T>) => {
     return (
     <div className="flex items-center justify-between py-4 px-6">
-        {rows.map( (rows) => {
-            return (<div key={rows.label} className={rows.className}>
+        {columns.map((column, index) => {
+            const value = data[column.key as keyof T];
+            const displayValue = column.transform ? column.transform(value, data) : String(value);
+
+            return (<div key={index} className={column.className}>
                 <div className="flex items-center gap-3">
-                    <Title text={rows.label} size="h4" />
+                    <Title text={displayValue} size="h4" />
                 </div>
             </div>);
+        
         })}
     </div>
     );

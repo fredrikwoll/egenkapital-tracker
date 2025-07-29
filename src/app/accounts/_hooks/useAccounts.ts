@@ -9,7 +9,7 @@ const useAccounts = (initalData: Account[]) => {
     return useQuery({
         queryKey: ['accounts'],
         queryFn: fetchAccounts,
-        initialData: initalData
+        initialData: initalData,
     })
 }
 

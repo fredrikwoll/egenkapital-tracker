@@ -6,13 +6,33 @@ import Select from "@/components/forms/Select";
 import Button from "@/components/ui/Button";
 import PageHeader from "@/components/ui/PageHeader";
 import TableHeader from "@/components/ui/tableHeader";
+import TableRow, { Column } from "@/components/ui/tableRow";
 import Title from "@/components/ui/Title";
-import { Account } from "@prisma/client";
+import { Account, AccountType } from "@prisma/client";
 import { useState } from "react";
 
 type AccountWithTotal = Account & {
     totalAmount: number
 }
+
+// Define your columns configuration
+const columns: Column<AccountWithTotal>[] = [
+  {
+    key: 'name',
+    className: 'flex-1'
+  },
+  {
+    key: 'type',
+    className: 'flex-1',
+    transform: (value: AccountType) => value.toLowerCase()
+  },
+  {
+    key: 'totalAmount',
+    className: 'flex-1',
+    transform: (value: number) => `${value} kr`
+  }
+];
+
 
 const AccountsTable = ({ accounts }: { accounts: AccountWithTotal[] }) => {
     const [expandedId, setExpandedId] = useState<string | null>(null)
@@ -59,6 +79,10 @@ const AccountsTable = ({ accounts }: { accounts: AccountWithTotal[] }) => {
     const handleCancelAdd = () => {
         setShowAddForm(false)
         setAddFormData({ name: '', type: '', amount: 0 })
+    }
+
+    if (!accounts?.length) {
+        return <div>No accounts to display</div>;
     }
 
     return (
@@ -152,39 +176,12 @@ const AccountsTable = ({ accounts }: { accounts: AccountWithTotal[] }) => {
                 {accounts.map((account) => (
                     <div key={account.id}>
                         {/* Main Row */}
+                        
                         <div
                             className="group hover:bg-gray-25 transition-colors cursor-pointer"
                             onClick={() => handleEdit(account)}
                         >
-                            <div className="flex items-center justify-between py-4 px-6">
-                                <div className="flex-1">
-                                    <div className="flex items-center gap-3">
-                                        <Title text={account.name} size="h3" />
-                                    </div>
-                                </div>
-                                <div className="flex-1">
-                                    <div className="flex items-center gap-3">
-                                        <Title text={account.type.toLowerCase()} size="h4" />
-                                    </div>
-                                </div>
-                                <div className="flex-1">
-                                    <div className="flex items-center gap-3">
-                                        <Title text={`${account.totalAmount} kr`} size="h3" />
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-4">
-                                    <div className="flex items-center gap-2">
-                                        <Button name="Edit" handleClick={(e) => {
-                                                e.stopPropagation()
-                                                handleEdit(account)
-                                            }}/>
-                                        <Button name="Delete" type="danger" handleClick={(e) => {
-                                            e.stopPropagation()
-                                            handleEdit(account)
-                                        }}/>
-                                    </div>
-                                </div>
-                            </div>
+                            <TableRow columns={columns} data={account} />
                         </div>
 
                         {/* Edit Form */}
