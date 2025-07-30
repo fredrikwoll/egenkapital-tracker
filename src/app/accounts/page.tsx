@@ -17,7 +17,7 @@ export default async function AccountsPage() {
 
     return (
     <div className="p-6">
-        <h1 className="text-2xl font-bold mb-6">Accounts</h1>
+        {/* <h1 className="text-2xl font-bold mb-6">Accounts</h1> */}
         <AccountsList initialData={data} />
     </div>
     );

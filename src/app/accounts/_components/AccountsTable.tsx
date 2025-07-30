@@ -4,6 +4,7 @@ import Input from "@/components/forms/Input";
 import Label from "@/components/forms/Label";
 import Select from "@/components/forms/Select";
 import Button from "@/components/ui/Button";
+import CardRow from "@/components/ui/CardRow";
 import PageHeader from "@/components/ui/PageHeader";
 import TableHeader from "@/components/ui/tableHeader";
 import TableRow, { Column } from "@/components/ui/tableRow";
@@ -33,8 +34,14 @@ const columns: Column<AccountWithTotal>[] = [
     }
 ];
 
+type AccountsTableType = {
+    accounts: AccountWithTotal[];
+    onSaveAdd: (data: unknown) => void;
+    onSaveEdit: (data: unknown) => void;
+    onDelete: (id: string) => void;
+}
 
-const AccountsTable = ({ accounts }: { accounts: AccountWithTotal[] }) => {
+const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTableType) => {
     const [expandedId, setExpandedId] = useState<string | null>(null)
     const [showAddForm, setShowAddForm] = useState(false)
     const [editFormData, setEditFormData] = useState({ name: '', type: 'SAVINGS' })
@@ -62,13 +69,15 @@ const AccountsTable = ({ accounts }: { accounts: AccountWithTotal[] }) => {
     }
 
     const handleSaveEdit = () => {
-        console.log('Saving edit:', editFormData)
+        console.log('Saving edit:', { id: expandedId, ...editFormData })
+        onSaveEdit({ id: expandedId, ...editFormData });
         setExpandedId(null)
     }
 
     const handleSaveAdd = () => {
         console.log('Creating new account:', addFormData)
         setShowAddForm(false)
+        onSaveAdd(addFormData);
         setAddFormData({ name: '', type: '', amount: 0 })
     }
 
@@ -189,9 +198,9 @@ const AccountsTable = ({ accounts }: { accounts: AccountWithTotal[] }) => {
                                         handleEdit(account)
                                     }}
                                     handleDeleteButton={(e) => {
-                                            e.stopPropagation()
-                                            handleEdit(account)
-                                        }}
+                                        e.stopPropagation()
+                                        onDelete(account.id);
+                                    }}
                                 />
                             </div>
 
@@ -257,47 +266,20 @@ const AccountsTable = ({ accounts }: { accounts: AccountWithTotal[] }) => {
                     {accounts.map((account) => (
                         <div key={account.id}>
                             {/* Mobile Card */}
-                            <div
-                                className="p-4 hover:bg-gray-25 transition-colors cursor-pointer"
-                                onClick={() => handleEdit(account)}
-                            >
-                                <div className="flex items-start justify-between">
-                                    <div className="flex-1 min-w-0">
-                                        <Title text={account.name} size="h3" />
-                                        <div className="mt-1 flex items-center gap-2">
-                                            <span className="text-lg font-mono text-text-primary">
-                                                {account.totalAmount} kr
-                                            </span>
-                                        </div>
-                                        <div className="mt-2">
-                                            <span className="inline-flex items-center px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded-full capitalize">
-                                                {account.type.toLowerCase()}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-2 ml-4">
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation()
-                                                handleEdit(account)
-                                            }}
-                                            className="p-2 text-gray-400 hover:text-gray-600 rounded"
-                                        >
-                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                            </svg>
-                                        </button>
-                                        <svg
-                                            className={`w-4 h-4 text-gray-400 transition-transform ${expandedId === account.id ? 'rotate-180' : ''
-                                                }`}
-                                            fill="none"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                        </svg>
-                                    </div>
-                                </div>
+                            <div className="p-4 hover:bg-gray-25 transition-colors cursor-pointer" onClick={() => handleEdit(account)}>
+                                <CardRow
+                                    title={account.name}
+                                    description={`${account.totalAmount} kr`}
+                                    type={account.type}
+                                    handleEditButton={(e) => {
+                                        e.stopPropagation()
+                                        handleEdit(account)
+                                    }}
+                                    handleDeleteButton={(e) => {
+                                        e.stopPropagation()
+                                        onDelete(account.id);
+                                    }}
+                                />
                             </div>
 
                             {/* Mobile Edit Form */}

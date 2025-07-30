@@ -1,7 +1,7 @@
 "use client";
 import { Account } from "@prisma/client"
-import { useQuery } from "@tanstack/react-query"
-import { fetchAccounts } from "../_api/accounts"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { createAccount, deleteAccount, fetchAccounts, updateAccount } from "../_api/accounts"
 
 
 
@@ -13,9 +13,37 @@ const useAccounts = (initalData: Account[]) => {
     })
 }
 
-const useCreateAccount = () => { /* mutation */ }
-const useUpdateAccount = () => { /* mutation */ }
-const useDeleteAccount = () => { /* mutation */ }
+const useCreateAccount = () => { 
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: createAccount,
+        onSuccess: () => {
+            queryClient.invalidateQueries({queryKey: ['accounts']});
+        }
+    })
+ }
+const useUpdateAccount = () => { 
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: updateAccount,
+        onSuccess: () => {
+            queryClient.invalidateQueries({queryKey: ['accounts']});
+        }
+    })
+ }
+
+const useDeleteAccount = () => { 
+     const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: deleteAccount,
+        onSuccess: () => {
+            queryClient.invalidateQueries({queryKey: ['accounts']});
+        }
+    })
+ }
 
 
 export {
