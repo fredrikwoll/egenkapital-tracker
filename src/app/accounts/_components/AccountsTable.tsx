@@ -4,13 +4,17 @@ import Input from "@/components/forms/Input";
 import Label from "@/components/forms/Label";
 import Select from "@/components/forms/Select";
 import Button from "@/components/ui/Button";
+import ButtonGroup from "@/components/ui/ButtonGroup";
 import CardRow from "@/components/ui/CardRow";
+import EmptyState from "@/components/ui/EmptyState";
 import PageHeader from "@/components/ui/PageHeader";
+import SectionHeader from "@/components/ui/SectionHeader";
 import TableHeader from "@/components/ui/tableHeader";
-import TableRow, { Column } from "@/components/ui/tableRow";
-import Title from "@/components/ui/Title";
+import TableRow, { type Column } from "@/components/ui/tableRow";
 import { Account, AccountType } from "@prisma/client";
 import { useState } from "react";
+import FormField from "@/components/forms/FormField";
+import DisplayField from "@/components/forms/DisplayField";
 
 type AccountWithTotal = Account & {
     totalAmount: number
@@ -108,19 +112,10 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
                 {showAddForm && (
                     <div className="bg-card">
                         <div className="px-4 md:px-6 py-4">
-                            <div className="flex items-center gap-3 mb-4">
-                                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                                    <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                                    </svg>
-                                </div>
-                                <Title text="Create New Account" size="h3" />
-                            </div>
-
+                            <SectionHeader title="Create New Account" />
                             <div className="max-w-2xl">
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <div>
-                                        <Label name="Account Name *" />
+                                    <FormField label="Account Name" required={true}>
                                         <Input
                                             name="account_name"
                                             type="text"
@@ -128,10 +123,9 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
                                             handleChange={(e) => setAddFormData({ ...addFormData, name: e.target.value })}
                                             placeholder="e.g. Emergency Fund"
                                         />
-                                    </div>
+                                    </FormField>
 
-                                    <div>
-                                        <Label name="Account Type" />
+                                    <FormField label="Account Type" required={true}>
                                         <Select
                                             name="account_type"
                                             value={addFormData.type}
@@ -141,12 +135,10 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
                                                 { name: 'Investment', value: 'INVESTMENT' }
                                             ]}
                                             handleChange={(e) => setAddFormData({ ...addFormData, type: e.target.value })}
-
                                         />
-                                    </div>
+                                    </FormField>
 
-                                    <div>
-                                        <Label name="Inital Amount" />
+                                    <FormField label="Inital Amount">
                                         <div className="relative">
                                             <Input
                                                 name="account_inital"
@@ -157,18 +149,17 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
                                             />
                                             <span className="absolute right-3 top-2 text-sm text-gray-500">kr</span>
                                         </div>
-                                    </div>
+                                    </FormField>
                                 </div>
 
-                                <div className="flex items-center gap-3 mt-6">
+                                <ButtonGroup>
                                     <Button name="Create Account" type="primary" handleClick={handleSaveAdd} isDisabled={!addFormData.name.trim()} />
                                     <Button name="Cancel" type="outline" handleClick={handleCancelAdd} />
-                                </div>
+                                </ButtonGroup>
                             </div>
                         </div>
                     </div>
                 )}
-
 
                 {/* Desktop Table View */}
                 <div className="hidden md:block divide-y divide-gray-50">
@@ -208,18 +199,9 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
                             {expandedId === account.id && (
                                 <div className="bg-card border-t border-gray-100 px-6 py-4 animate-in slide-in-from-top-2 duration-200">
                                     <div className="max-w-2xl">
-                                        <div className="flex items-center gap-3 mb-4">
-                                            <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
-                                                <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                                </svg>
-                                            </div>
-                                            <Title text="Edit Account" size="h4" />
-                                        </div>
-
+                                        <SectionHeader title="Edit Account" size="h4" variant="edit" />
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                            <div>
-                                                <Label name="Account Name" />
+                                            <FormField label="Account Name">
                                                 <Input
                                                     name="account_name"
                                                     type="text"
@@ -227,10 +209,8 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
                                                     handleChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
                                                     placeholder="Enter account name"
                                                 />
-                                            </div>
-
-                                            <div>
-                                                <Label name="Account Type" />
+                                            </FormField>
+                                            <FormField label="Account Type">
                                                 <Select
                                                     name="account_type"
                                                     value={editFormData.type}
@@ -241,19 +221,17 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
                                                     ]}
                                                     handleChange={(e) => setEditFormData({ ...editFormData, type: e.target.value })}
                                                 />
-                                            </div>
-
-                                            <div>
-                                                <Label name="Total Amount" />
-                                                <div className="relative">
-                                                    <span className="w-full px-3 py-2">{account.totalAmount}kr</span>
-                                                </div>
-                                            </div>
+                                            </FormField>
+                                            <DisplayField
+                                                label="Total Amount"
+                                                value={account.totalAmount}
+                                                suffix="kr"
+                                            />
                                         </div>
-                                        <div className="flex items-center gap-3 mt-6">
+                                        <ButtonGroup>
                                             <Button handleClick={handleSaveEdit} name="Save Changes" />
                                             <Button handleClick={handleCancelEdit} name="Cancel" type="outline" />
-                                        </div>
+                                        </ButtonGroup>
                                     </div>
                                 </div>
                             )}
@@ -285,20 +263,10 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
                             {/* Mobile Edit Form */}
                             {expandedId === account.id && (
                                 <div className="bg-card border-t border-gray-100 px-4 py-4">
-                                    <div className="flex items-center gap-3 mb-4">
-                                        <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
-                                            <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                            </svg>
-                                        </div>
-                                        <Title text="Edit Account" size="h4" />
-                                    </div>
-
+                                    <SectionHeader title="Edit Account" size="h4" variant="edit" />
                                     <div className="space-y-4">
-                                        <div>
-                                            <label className="block text-xs font-medium text-text-primary mb-2">
-                                                Account Name
-                                            </label>
+                                        <FormField label="Account Name">
+                                            {/* <label className="block text-xs font-medium text-text-primary mb-2">Account Name</label> */}
                                             <Input
                                                 name="account_name"
                                                 type="text"
@@ -306,12 +274,8 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
                                                 handleChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
                                                 placeholder="Enter account name"
                                             />
-                                        </div>
-
-                                        <div>
-                                            <label className="block text-xs font-medium text-text-primary mb-2">
-                                                Account Type
-                                            </label>
+                                        </FormField>
+                                        <FormField label="Account Type">
                                             <Select
                                                 name="account_type"
                                                 value={editFormData.type}
@@ -322,22 +286,17 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
                                                 ]}
                                                 handleChange={(e) => setEditFormData({ ...editFormData, type: e.target.value })}
                                             />
-                                        </div>
-
-                                        <div>
-                                            <label className="block text-xs font-medium text-text-primary mb-2">
-                                                Total Amount
-                                            </label>
-                                            <div className="relative">
-                                                <span className="absolute right-3 top-2 text-sm text-gray-500">{account.totalAmount} kr</span>
-                                            </div>
-                                        </div>
+                                        </FormField>
+                                        <DisplayField
+                                            label="Total Amount"
+                                            value={account.totalAmount}
+                                            suffix="kr"
+                                        />
                                     </div>
-
-                                    <div className="flex flex-col sm:flex-row gap-3 mt-6">
+                                    <ButtonGroup direction="column">
                                         <Button handleClick={handleSaveEdit} name="Save Changes" />
                                         <Button handleClick={handleCancelEdit} name="Cancel" type="outline" />
-                                    </div>
+                                    </ButtonGroup>
                                 </div>
                             )}
                         </div>
@@ -346,15 +305,11 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
 
                 {/* Empty State */}
                 {accounts.length === 0 && (
-                    <div className="py-12 text-center">
-                        <div className="text-gray-400">
-                            <svg className="w-12 h-12 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                            </svg>
-                            <p className="text-sm text-gray-500 mb-2">No accounts yet</p>
-                            <Button handleClick={handleAddNew} name="Create your first account" />
-                        </div>
-                    </div>
+                    <EmptyState
+                        title="No accounts yet"
+                        actionLabel="Create your first account"
+                        onAction={handleAddNew}
+                    />
                 )}
             </div></>);
 }
