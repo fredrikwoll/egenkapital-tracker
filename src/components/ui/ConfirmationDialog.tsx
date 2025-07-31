@@ -1,21 +1,23 @@
 'use client'
 
-import { useState } from 'react'
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
+export type ConfirmationDialogProps = {
+      title: string;
+      message: string;
+      confirmText?: string;
+      cancelText?: string;
+      onConfirm: () => void;
+      onCancel: () => void;
+      isOpen: boolean;
+  }
 
-export default function ModalAlert() {
-  const [open, setOpen] = useState(true)
+
+const ConfirmationDialog = ({ title, message, confirmText = "Confrim", cancelText = "Cancel", onConfirm, onCancel, isOpen = false }: ConfirmationDialogProps) => {
 
   return (
     <div>
-      <button
-        onClick={() => setOpen(true)}
-        className="rounded-md bg-gray-950/5 px-2.5 py-1.5 text-sm font-semibold text-gray-900 hover:bg-gray-950/10"
-      >
-        Open dialog
-      </button>
-      <Dialog open={open} onClose={setOpen} className="relative z-10">
+      <Dialog open={isOpen} onClose={onCancel} className="relative z-10">
         <DialogBackdrop
           transition
           className="fixed inset-0 bg-gray-500/75 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"
@@ -33,12 +35,11 @@ export default function ModalAlert() {
                 </div>
                 <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                   <DialogTitle as="h3" className="text-base font-semibold text-gray-900">
-                    Deactivate account
+                    {title}
                   </DialogTitle>
                   <div className="mt-2">
                     <p className="text-sm text-gray-500">
-                      Are you sure you want to deactivate your account? All of your data will be permanently removed
-                      from our servers forever. This action cannot be undone.
+                      {message}
                     </p>
                   </div>
                 </div>
@@ -46,18 +47,18 @@ export default function ModalAlert() {
               <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
                 <button
                   type="button"
-                  onClick={() => setOpen(false)}
+                  onClick={onConfirm}
                   className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto"
                 >
-                  Deactivate
+                  {confirmText}
                 </button>
                 <button
                   type="button"
                   data-autofocus
-                  onClick={() => setOpen(false)}
+                  onClick={onCancel}
                   className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50 sm:mt-0 sm:w-auto"
                 >
-                  Cancel
+                  {cancelText}
                 </button>
               </div>
             </DialogPanel>
@@ -67,3 +68,5 @@ export default function ModalAlert() {
     </div>
   )
 }
+
+export default ConfirmationDialog;
