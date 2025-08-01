@@ -20,6 +20,9 @@ const useCreateAccount = () => {
         mutationFn: createAccount,
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: ['accounts']});
+        },
+        onError: (error) => {
+            console.log('❌ Create failed:', error); // Add this
         }
     })
  }
@@ -30,6 +33,9 @@ const useUpdateAccount = () => {
         mutationFn: updateAccount,
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: ['accounts']});
+        },
+        onError: (error) => {
+            console.log('❌ Update failed:', error); // Add this
         }
     })
  }
@@ -37,12 +43,15 @@ const useUpdateAccount = () => {
 const useDeleteAccount = () => { 
      const queryClient = useQueryClient();
 
-    return useMutation({
+  return useMutation({
         mutationFn: deleteAccount,
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: ['accounts']});
+        },
+        onError: (error) => {
+            console.log('❌ Delete failed:', error); // Add this
         }
-    })
+    });
  }
 
 
