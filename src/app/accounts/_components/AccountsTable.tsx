@@ -103,7 +103,7 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
               title: "Delete Account",
               message: "Are you sure you want to delete this account? This action cannot be undone.",
               confirmText: "Delete",
-              cancelText: "Can  cel"
+              cancelText: "Cancel"
           });
 
           if (confirmed) {
