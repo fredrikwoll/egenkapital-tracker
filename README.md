@@ -19,7 +19,7 @@ I need a better way to track how much money I have for a down payment on a prope
 
 ## Functionality
 ### Core
-- [ ] Accounts with types (stock savings account, savings account, etc.)
+- [x] Accounts with types (stock savings account, savings account, etc.)
 - [ ] Records/history per account
 - [ ] Debt overview
 - [ ] Income management
@@ -46,19 +46,19 @@ I need a better way to track how much money I have for a down payment on a prope
 
 ### Fase 3: Basic Frontend UI
 - [x] Figma sketches [link to sketch v1.0](https://www.figma.com/design/WmzM4su07X19E3ESEGzRSV/EquityTracker?node-id=0-1&t=k68FtIsCHqWX7rgE-1)
-- [ ] Tailwind CSS classes/configuration
-- [ ] Basic component structure
-- [ ] Basic form component
+- [x] Tailwind CSS classes/configuration
+- [x] Basic component structure
+- [x] Basic form component
 
-### Fase 4: Onboarding
-- [ ] First time setup flow
-- [ ] Create accounts
-- [ ] Set starting values
-
-### Fase 5: Dashboard
+### Fase 4: Dashboard
 - [ ] Overview of equity capital
 - [ ] Debt and inncome overview
 - [ ] Basic stats
+
+### Fase 5: Onboarding
+- [ ] First time setup flow
+- [ ] Create accounts
+- [ ] Set starting values
 
 ### Fase 6: Loan simulator
 - [ ] Calculation logic
