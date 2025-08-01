@@ -3,6 +3,7 @@ import { Account, AccountType } from "@prisma/client";
 import { useAccounts, useCreateAccount, useDeleteAccount, useUpdateAccount } from "../_hooks/useAccounts";
 import AccountsTable from "./accountsTable";
 import Spinner from "@/components/ui/Spinner";
+import { useConfirmation } from "@/contexts/ConfirmationContext";
 
 type AddFormData = {
     name: string;
@@ -21,6 +22,8 @@ const AccountsList = ({ initialData }: { initialData: Account[] }) => {
     const createMutation = useCreateAccount();
     const updateMutation = useUpdateAccount();
     const deleteMutation = useDeleteAccount();
+    
+    const { confirm } = useConfirmation();
 
     const handleOnSaveAdd = (data: AddFormData) => {
         createMutation.mutate({
@@ -38,8 +41,16 @@ const AccountsList = ({ initialData }: { initialData: Account[] }) => {
         });
     }
 
-    const handleOnDelete = (accountId: string) => {
-        deleteMutation.mutate({ id: accountId });
+    const handleOnDelete = async (accountId: string) => {
+        const confirmed = await confirm({
+              title: "Delete Account",
+              message: "Are you sure you want to delete this account? This action cannot be undone.",
+              confirmText: "Delete",
+              cancelText: "Cancel"
+          });
+        if (confirmed) {
+            deleteMutation.mutate({ id: accountId });
+        }
     }
 
 

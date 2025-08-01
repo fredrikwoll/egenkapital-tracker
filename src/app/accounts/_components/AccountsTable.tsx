@@ -97,23 +97,6 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
         setAddFormData({ name: '', type: '', amount: 0 })
     }
 
-    const handleDelete = async (accountId: string) => {
-        console.log('Test Delete');
-          const confirmed = await confirm({
-              title: "Delete Account",
-              message: "Are you sure you want to delete this account? This action cannot be undone.",
-              confirmText: "Delete",
-              cancelText: "Cancel"
-          });
-
-          if (confirmed) {
-              // User clicked confirm - do the delete
-              console.log("Deleting account...", accountId);
-          } else {
-              // User clicked cancel or closed dialog
-              console.log("Delete cancelled");
-          }
-      };
 
     if (!accounts?.length) {
         return <div>No accounts to display</div>;
@@ -208,7 +191,7 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
                                         e.stopPropagation()
                                         handleEdit(account)
                                     }}
-                                    handleDeleteButton={() => handleDelete(account.id)}
+                                    handleDeleteButton={() => onDelete(account.id)}
 
                                 />
                             </div>
@@ -271,7 +254,7 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
                                         e.stopPropagation()
                                         handleEdit(account)
                                     }}
-                                     handleDeleteButton={() => handleDelete(account.id)}
+                                     handleDeleteButton={() => onDelete(account.id)}
                                 />
                             </div>
 
