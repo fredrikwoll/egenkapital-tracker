@@ -15,7 +15,7 @@ import { Account, AccountType } from "@prisma/client";
 import { useState } from "react";
 import FormField from "@/components/forms/FormField";
 import DisplayField from "@/components/forms/DisplayField";
-import useConfirmation from "@/hooks/useConfirmation";
+import { useConfirmation } from "@/contexts/ConfirmationContext";
 
 type AccountWithTotal = Account & {
     totalAmount: number
@@ -52,7 +52,7 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
     const [editFormData, setEditFormData] = useState({ name: '', type: 'SAVINGS' })
     const [addFormData, setAddFormData] = useState({ name: '', type: '', amount: 0 })
 
-    const { confirm, confirmation } = useConfirmation();
+    const { confirm } = useConfirmation();
 
     const handleEdit = (account: AccountWithTotal) => {
         if (expandedId === account.id) {
@@ -103,7 +103,7 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
               title: "Delete Account",
               message: "Are you sure you want to delete this account? This action cannot be undone.",
               confirmText: "Delete",
-              cancelText: "Cancel"
+              cancelText: "Can  cel"
           });
 
           if (confirmed) {
@@ -200,7 +200,6 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
 
                             <div
                                 className="group hover:bg-gray-25 transition-colors cursor-pointer"
-                                onClick={() => handleEdit(account)}
                             >
                                 <TableRow
                                     columns={columns}
