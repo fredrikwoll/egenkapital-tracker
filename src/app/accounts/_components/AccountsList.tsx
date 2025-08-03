@@ -4,12 +4,8 @@ import { useAccounts, useCreateAccount, useDeleteAccount, useUpdateAccount } fro
 import AccountsTable from "./accountsTable";
 import Spinner from "@/components/ui/Spinner";
 import { useConfirmation } from "@/contexts/ConfirmationContext";
+import { CreateAccountData } from "@/schemas/account";
 
-type AddFormData = {
-    name: string;
-    type: AccountType;
-    amount: number;
-}
 
 type EditFormData = {
     id: string;
@@ -25,11 +21,11 @@ const AccountsList = ({ initialData }: { initialData: Account[] }) => {
     
     const { confirm } = useConfirmation();
 
-    const handleOnSaveAdd = (data: AddFormData) => {
+    const handleOnSaveAdd = (data: CreateAccountData) => {
         createMutation.mutate({
             name: data.name,
             type: data.type as AccountType,
-            initialAmount: Number(data.amount)
+            initialAmount: Number(data.initialAmount)
         });
     }
 

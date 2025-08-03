@@ -1,7 +1,6 @@
 "use client";
 
 import Input from "@/components/forms/Input";
-import Label from "@/components/forms/Label";
 import Select from "@/components/forms/Select";
 import Button from "@/components/ui/Button";
 import ButtonGroup from "@/components/ui/ButtonGroup";
@@ -15,7 +14,11 @@ import { Account, AccountType } from "@prisma/client";
 import { useState } from "react";
 import FormField from "@/components/forms/FormField";
 import DisplayField from "@/components/forms/DisplayField";
-import { useConfirmation } from "@/contexts/ConfirmationContext";
+
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createAccountSchema, CreateAccountData } from
+    "@/schemas/account";
 
 type AccountWithTotal = Account & {
     totalAmount: number
@@ -50,9 +53,30 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
     const [expandedId, setExpandedId] = useState<string | null>(null)
     const [showAddForm, setShowAddForm] = useState(false)
     const [editFormData, setEditFormData] = useState({ name: '', type: 'SAVINGS' })
-    const [addFormData, setAddFormData] = useState({ name: '', type: '', amount: 0 })
 
-    const { confirm } = useConfirmation();
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+        reset
+    } = useForm<CreateAccountData>({
+        resolver: zodResolver(createAccountSchema),
+        defaultValues: {
+            name: "",
+            type: "SAVINGS",
+            initialAmount: 0
+        }
+    });
+
+    const onSubmit = (data: CreateAccountData) => {
+        console.log('Creating new account:', data);
+        console.log('Submitting data:', data);
+        console.log('initialAmount:', data.initialAmount, typeof data.initialAmount);
+        onSaveAdd(data);
+        setShowAddForm(false);
+        reset(); // Resets form to default values
+    };
 
     const handleEdit = (account: AccountWithTotal) => {
         if (expandedId === account.id) {
@@ -71,7 +95,7 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
         setExpandedId(null)
         setShowAddForm(!showAddForm)
         if (!showAddForm) {
-            setAddFormData({ name: '', type: '', amount: 0 })
+            //setAddFormData({ name: '', type: '', amount: 0 })
         }
     }
 
@@ -85,7 +109,7 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
         console.log('Creating new account:', addFormData)
         setShowAddForm(false)
         onSaveAdd(addFormData);
-        setAddFormData({ name: '', type: '', amount: 0 })
+        //setAddFormData({ name: '', type: '', amount: 0 })
     }
 
     const handleCancelEdit = () => {
@@ -94,9 +118,8 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
 
     const handleCancelAdd = () => {
         setShowAddForm(false)
-        setAddFormData({ name: '', type: '', amount: 0 })
+        //setAddFormData({ name: '', type: '', amount: 0 })
     }
-
 
     if (!accounts?.length) {
         return <div>No accounts to display</div>;
@@ -117,50 +140,47 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
                     <div className="bg-card">
                         <div className="px-4 md:px-6 py-4">
                             <SectionHeader title="Create New Account" />
-                            <div className="max-w-2xl">
+                            <form onSubmit={handleSubmit(onSubmit)}  className="max-w-2xl">
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <FormField label="Account Name" required={true}>
                                         <Input
-                                            name="account_name"
+                                            {...register("name")}
                                             type="text"
-                                            value={addFormData.name}
-                                            handleChange={(e) => setAddFormData({ ...addFormData, name: e.target.value })}
                                             placeholder="e.g. Emergency Fund"
                                         />
+                                        {errors.name && <span className="text-red-500 text-sm">{errors.name.message}</span>}
                                     </FormField>
 
                                     <FormField label="Account Type" required={true}>
                                         <Select
-                                            name="account_type"
-                                            value={addFormData.type}
+                                            {...register("type")}
                                             options={[
                                                 { name: 'Savings', value: 'SAVINGS' },
                                                 { name: 'Checking', value: 'CHECKING' },
                                                 { name: 'Investment', value: 'INVESTMENT' }
                                             ]}
-                                            handleChange={(e) => setAddFormData({ ...addFormData, type: e.target.value })}
                                         />
+                                        {errors.type && <span className="text-red-500 text-sm">{errors.type.message}</span>}
                                     </FormField>
 
                                     <FormField label="Inital Amount">
                                         <div className="relative">
                                             <Input
-                                                name="account_inital"
+                                                {...register("initialAmount")}
                                                 type="number"
-                                                value={addFormData.amount}
-                                                handleChange={(e) => setAddFormData({ ...addFormData, amount: e.target.value })}
                                                 placeholder="0"
                                             />
                                             <span className="absolute right-3 top-2 text-sm text-gray-500">kr</span>
                                         </div>
+                                        {errors.initialAmount && <span className="text-red-500 text-sm">{errors.initialAmount.message}</span>}
                                     </FormField>
                                 </div>
 
                                 <ButtonGroup>
-                                    <Button name="Create Account" type="primary" handleClick={handleSaveAdd} isDisabled={!addFormData.name.trim()} />
-                                    <Button name="Cancel" type="outline" handleClick={handleCancelAdd} />
+                                    <Button name="Create Account" variant="primary" type="submit" isDisabled={isSubmitting} />
+                                    <Button name="Cancel" variant="outline" handleClick={handleCancelAdd} />
                                 </ButtonGroup>
-                            </div>
+                            </form>
                         </div>
                     </div>
                 )}
@@ -204,24 +224,22 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                             <FormField label="Account Name">
                                                 <Input
-                                                    name="account_name"
+                                                    {...register("name")}
                                                     type="text"
-                                                    value={editFormData.name}
-                                                    handleChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
                                                     placeholder="Enter account name"
                                                 />
+                                                {errors.name && <span className="text-red-500 text-sm">{errors.name.message}</span>}
                                             </FormField>
                                             <FormField label="Account Type">
                                                 <Select
-                                                    name="account_type"
-                                                    value={editFormData.type}
+                                                    {...register("type")}
                                                     options={[
                                                         { name: 'Savings', value: 'SAVINGS' },
                                                         { name: 'Checking', value: 'CHECKING' },
                                                         { name: 'Investment', value: 'INVESTMENT' }
                                                     ]}
-                                                    handleChange={(e) => setEditFormData({ ...editFormData, type: e.target.value })}
                                                 />
+                                                {errors.name && <span className="text-red-500 text-sm">{errors.name.message}</span>}
                                             </FormField>
                                             <DisplayField
                                                 label="Total Amount"
@@ -230,8 +248,8 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
                                             />
                                         </div>
                                         <ButtonGroup>
-                                            <Button handleClick={handleSaveEdit} name="Save Changes" />
-                                            <Button handleClick={handleCancelEdit} name="Cancel" type="outline" />
+                                            <Button name="Create Account" variant="primary" type="submit" isDisabled={isSubmitting} />
+                                            <Button name="Cancel" variant="outline" handleClick={handleCancelAdd} />
                                         </ButtonGroup>
                                     </div>
                                 </div>
@@ -254,7 +272,7 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
                                         e.stopPropagation()
                                         handleEdit(account)
                                     }}
-                                     handleDeleteButton={() => onDelete(account.id)}
+                                    handleDeleteButton={() => onDelete(account.id)}
                                 />
                             </div>
 
@@ -266,24 +284,22 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
                                         <FormField label="Account Name">
                                             {/* <label className="block text-xs font-medium text-text-primary mb-2">Account Name</label> */}
                                             <Input
-                                                name="account_name"
+                                                {...register("name")}
                                                 type="text"
-                                                value={editFormData.name}
-                                                handleChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
                                                 placeholder="Enter account name"
                                             />
+                                            {errors.name && <span className="text-red-500 text-sm">{errors.name.message}</span>}
                                         </FormField>
                                         <FormField label="Account Type">
                                             <Select
-                                                name="account_type"
-                                                value={editFormData.type}
+                                                {...register("type")}
                                                 options={[
                                                     { name: 'Savings', value: 'SAVINGS' },
                                                     { name: 'Checking', value: 'CHECKING' },
                                                     { name: 'Investment', value: 'INVESTMENT' }
                                                 ]}
-                                                handleChange={(e) => setEditFormData({ ...editFormData, type: e.target.value })}
                                             />
+                                            {errors.name && <span className="text-red-500 text-sm">{errors.name.message}</span>}
                                         </FormField>
                                         <DisplayField
                                             label="Total Amount"
@@ -292,8 +308,8 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
                                         />
                                     </div>
                                     <ButtonGroup direction="column">
-                                        <Button handleClick={handleSaveEdit} name="Save Changes" />
-                                        <Button handleClick={handleCancelEdit} name="Cancel" type="outline" />
+                                        <Button name="Create Account" variant="primary" type="submit" isDisabled={isSubmitting} />
+                                        <Button name="Cancel" variant="outline" handleClick={handleCancelAdd} />
                                     </ButtonGroup>
                                 </div>
                             )}

@@ -1,8 +1,7 @@
 "use server";
 import { prisma } from '@/lib/prisma'
-import { AccountType } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
-import { z } from "zod";
+import { createAccountSchema, CreateAccountData } from '@/schemas/account';
 
 
 export async function GET() {
@@ -33,20 +32,13 @@ export async function GET() {
 
 }
 
-const FormAccountSchema = z.object({
-    name: z.string(),
-    type: z.nativeEnum(AccountType),
-    initialAmount: z.number()
-});
-
-type AccountFormValidate = z.infer<typeof FormAccountSchema>
 export async function POST(request: NextRequest) {
 
     try {
 
         const data = await request.json();
 
-        const validation = FormAccountSchema.safeParse(data);
+        const validation = createAccountSchema.safeParse(data);
 
         if (!validation.success) {
             return NextResponse.json({
@@ -54,7 +46,7 @@ export async function POST(request: NextRequest) {
                 details: validation.error.issues
             }, { status: 400 });
         }
-        const validatedData: AccountFormValidate = validation.data;
+        const validatedData: CreateAccountData = validation.data;
 
         const { name, type, initialAmount = 0 } = validatedData;
 

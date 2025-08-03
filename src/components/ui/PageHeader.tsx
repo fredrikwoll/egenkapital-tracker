@@ -10,7 +10,7 @@ const PageHeader = ({ title, description, hasButton = true, buttonText = "", han
                 <h1 className="title text-text-primary text-2xl">{title}</h1>
                 <span className="text-sm text-text-secondary">{description}</span>
             </div>
-            {hasButton && <Button name={buttonText} type="primary-icon" shortName="Add" handleClick={handleClick} />}
+            {hasButton && <Button name={buttonText} variant="primary-icon" shortName="Add" handleClick={handleClick} />}
         </div>);
 }
 

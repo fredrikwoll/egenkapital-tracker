@@ -32,7 +32,7 @@ const TableRow = <T,>({ data, columns, handleEditButton, handleDeleteButton }: T
             <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
                     <Button name="Edit" handleClick={handleEditButton} />
-                    <Button name="Delete" type="danger" handleClick={handleDeleteButton} />
+                    <Button name="Delete" variant="danger" handleClick={handleDeleteButton} />
                 </div>
             </div>
         </div>
