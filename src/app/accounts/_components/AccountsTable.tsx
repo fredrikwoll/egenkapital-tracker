@@ -17,7 +17,7 @@ import DisplayField from "@/components/forms/DisplayField";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createAccountSchema, CreateAccountData } from
+import { createAccountSchema, CreateAccountData, EditAccountData, editAccountSchema } from
     "@/schemas/account";
 
 type AccountWithTotal = Account & {
@@ -52,7 +52,6 @@ type AccountsTableType = {
 const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTableType) => {
     const [expandedId, setExpandedId] = useState<string | null>(null)
     const [showAddForm, setShowAddForm] = useState(false)
-    const [editFormData, setEditFormData] = useState({ name: '', type: 'SAVINGS' })
 
 
     const {
@@ -69,6 +68,19 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
         }
     });
 
+    const editForm = useForm<EditAccountData>({
+        resolver: zodResolver(editAccountSchema)
+    });
+
+    const {
+        register: editRegister,
+        handleSubmit: editHandleSubmit,
+        formState: { errors: editErrors, isSubmitting: editIsSubmitting
+        },
+        reset: editReset,
+        setValue: editSetValue
+    } = editForm;
+
     const onSubmit = (data: CreateAccountData) => {
         console.log('Creating new account:', data);
         console.log('Submitting data:', data);
@@ -78,18 +90,28 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
         reset(); // Resets form to default values
     };
 
+    const onEditSubmit = (data: EditAccountData) => {
+        console.log('Editing account:', { id: expandedId, ...data });
+        onSaveEdit({ id: expandedId, ...data });
+        setExpandedId(null);
+        editReset();
+    };
+
     const handleEdit = (account: AccountWithTotal) => {
+         console.log('handleEdit called with:', account.name);
         if (expandedId === account.id) {
-            setExpandedId(null)
+            setExpandedId(null);
+            editReset();
         } else {
-            setShowAddForm(false)
-            setExpandedId(account.id)
-            setEditFormData({
-                name: account.name,
-                type: account.type
-            })
+            setShowAddForm(false);
+            setExpandedId(account.id);
+
+            console.log('Setting edit values:', account.name,
+                account.type);
+            editSetValue('name', account.name);
+            editSetValue('type', account.type);
         }
-    }
+    };
 
     const handleAddNew = () => {
         setExpandedId(null)
@@ -113,8 +135,9 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
     }
 
     const handleCancelEdit = () => {
-        setExpandedId(null)
-    }
+        setExpandedId(null);
+        editReset();
+    };
 
     const handleCancelAdd = () => {
         setShowAddForm(false)
@@ -140,7 +163,7 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
                     <div className="bg-card">
                         <div className="px-4 md:px-6 py-4">
                             <SectionHeader title="Create New Account" />
-                            <form onSubmit={handleSubmit(onSubmit)}  className="max-w-2xl">
+                            <form onSubmit={handleSubmit(onSubmit)} className="max-w-2xl">
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <FormField label="Account Name" required={true}>
                                         <Input
@@ -219,27 +242,27 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
                             {/* Edit Form */}
                             {expandedId === account.id && (
                                 <div className="bg-card border-t border-gray-100 px-6 py-4 animate-in slide-in-from-top-2 duration-200">
-                                    <div className="max-w-2xl">
+                                    <form onSubmit={editHandleSubmit(onEditSubmit)} className="max-w-2xl">
                                         <SectionHeader title="Edit Account" size="h4" variant="edit" />
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                             <FormField label="Account Name">
                                                 <Input
-                                                    {...register("name")}
+                                                    {...editRegister("name")}
                                                     type="text"
                                                     placeholder="Enter account name"
                                                 />
-                                                {errors.name && <span className="text-red-500 text-sm">{errors.name.message}</span>}
+                                                {editErrors.name && <span className="text-red-500 text-sm">{editErrors.name.message}</span>}
                                             </FormField>
                                             <FormField label="Account Type">
                                                 <Select
-                                                    {...register("type")}
+                                                    {...editRegister("type")}
                                                     options={[
                                                         { name: 'Savings', value: 'SAVINGS' },
                                                         { name: 'Checking', value: 'CHECKING' },
                                                         { name: 'Investment', value: 'INVESTMENT' }
                                                     ]}
                                                 />
-                                                {errors.name && <span className="text-red-500 text-sm">{errors.name.message}</span>}
+                                                {editErrors.type && <span className="text-red-500 text-sm">{editErrors.type.message}</span>}
                                             </FormField>
                                             <DisplayField
                                                 label="Total Amount"
@@ -248,10 +271,10 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
                                             />
                                         </div>
                                         <ButtonGroup>
-                                            <Button name="Create Account" variant="primary" type="submit" isDisabled={isSubmitting} />
-                                            <Button name="Cancel" variant="outline" handleClick={handleCancelAdd} />
+                                            <Button name="Save Changes" variant="primary" type="submit" isDisabled={editIsSubmitting} />
+                                            <Button name="Cancel" variant="outline" handleClick={handleCancelEdit} />
                                         </ButtonGroup>
-                                    </div>
+                                    </form>
                                 </div>
                             )}
                         </div>
@@ -279,38 +302,40 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
                             {/* Mobile Edit Form */}
                             {expandedId === account.id && (
                                 <div className="bg-card border-t border-gray-100 px-4 py-4">
-                                    <SectionHeader title="Edit Account" size="h4" variant="edit" />
-                                    <div className="space-y-4">
-                                        <FormField label="Account Name">
-                                            {/* <label className="block text-xs font-medium text-text-primary mb-2">Account Name</label> */}
-                                            <Input
-                                                {...register("name")}
-                                                type="text"
-                                                placeholder="Enter account name"
+                                    <form onSubmit={editHandleSubmit(onEditSubmit)}>
+                                        <SectionHeader title="Edit Account" size="h4" variant="edit" />
+                                        <div className="space-y-4">
+                                            <FormField label="Account Name">
+                                                {/* <label className="block text-xs font-medium text-text-primary mb-2">Account Name</label> */}
+                                                <Input
+                                                    {...editRegister("name")}
+                                                    type="text"
+                                                    placeholder="Enter account name"
+                                                />
+                                                {editErrors.name && <span className="text-red-500 text-sm">{editErrors.name.message}</span>}
+                                            </FormField>
+                                            <FormField label="Account Type">
+                                                <Select
+                                                    {...editRegister("type")}
+                                                    options={[
+                                                        { name: 'Savings', value: 'SAVINGS' },
+                                                        { name: 'Checking', value: 'CHECKING' },
+                                                        { name: 'Investment', value: 'INVESTMENT' }
+                                                    ]}
+                                                />
+                                                {editErrors.type && <span className="text-red-500 text-sm">{editErrors.type.message}</span>}
+                                            </FormField>
+                                            <DisplayField
+                                                label="Total Amount"
+                                                value={account.totalAmount}
+                                                suffix="kr"
                                             />
-                                            {errors.name && <span className="text-red-500 text-sm">{errors.name.message}</span>}
-                                        </FormField>
-                                        <FormField label="Account Type">
-                                            <Select
-                                                {...register("type")}
-                                                options={[
-                                                    { name: 'Savings', value: 'SAVINGS' },
-                                                    { name: 'Checking', value: 'CHECKING' },
-                                                    { name: 'Investment', value: 'INVESTMENT' }
-                                                ]}
-                                            />
-                                            {errors.name && <span className="text-red-500 text-sm">{errors.name.message}</span>}
-                                        </FormField>
-                                        <DisplayField
-                                            label="Total Amount"
-                                            value={account.totalAmount}
-                                            suffix="kr"
-                                        />
-                                    </div>
-                                    <ButtonGroup direction="column">
-                                        <Button name="Create Account" variant="primary" type="submit" isDisabled={isSubmitting} />
-                                        <Button name="Cancel" variant="outline" handleClick={handleCancelAdd} />
-                                    </ButtonGroup>
+                                        </div>
+                                        <ButtonGroup direction="column">
+                                            <Button name="Save Changes" variant="primary" type="submit" isDisabled={editIsSubmitting} />
+                                            <Button name="Cancel" variant="outline" handleClick={handleCancelEdit} />
+                                        </ButtonGroup>
+                                    </form>
                                 </div>
                             )}
                         </div>
