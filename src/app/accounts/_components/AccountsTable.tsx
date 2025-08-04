@@ -9,6 +9,7 @@ import { Account, AccountType } from "@prisma/client";
 import CreateAccountForm from "./CreateAccountForm";
 import { useAccountForms } from "../_hooks/useAccountsForm";
 import EditAccountForm from "./EditAccountForm";
+import { CreateAccountData, EditAccountData } from "@/schemas/account";
 
 type AccountWithTotal = Account & {
     totalAmount: number
@@ -34,8 +35,8 @@ const columns: Column<AccountWithTotal>[] = [
 
 type AccountsTableType = {
     accounts: AccountWithTotal[];
-    onSaveAdd: (data: unknown) => void;
-    onSaveEdit: (data: unknown) => void;
+    onSaveAdd: (data: CreateAccountData) => void;
+    onSaveEdit: (data: EditAccountData & {id: string}) => void;
     onDelete: (id: string) => void;
 }
 

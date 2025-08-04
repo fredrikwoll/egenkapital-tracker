@@ -1,5 +1,5 @@
 // For Client Components - HTTP requests
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
 
 export async function fetchAccounts() {
   const response = await fetch(`${baseUrl}/api/accounts`);
