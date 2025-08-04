@@ -56,7 +56,6 @@ const CreateAccountForm = ({ onSubmit, onCancel, form }: CreateAccountFormProps)
                             {errors.initialAmount && <span className="text-red-500 text-sm">{errors.initialAmount.message}</span>}
                         </FormField>
                     </div>
-                    <span>TESTING</span>
                     <ButtonGroup>
                         <Button name="Create Account" shortName="Create" variant="primary" type="submit" isDisabled={isSubmitting} />
                         <Button name="Cancel" shortName="Cancel" variant="outline" handleClick={onCancel} />
