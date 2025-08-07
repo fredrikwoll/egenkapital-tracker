@@ -1,5 +1,5 @@
 "use client";
-import { AccountRecord, RecordType } from "@prisma/client";
+import { Account, AccountRecord, RecordType } from "@prisma/client";
 import { useRecords, useCreateRecord, useUpdateRecord, useDeleteRecord } from "../_hooks/useRecords";
 import RecordsTable from "./RecordsTable";
 import Spinner from "@/components/ui/Spinner";
@@ -13,7 +13,7 @@ type EditFormData = {
     type: RecordType;
 }
 
-const RecordsList = ({ initialData }: { initialData: AccountRecord[] }) => {
+const RecordsList = ({ initialData, accountList }: { initialData: AccountRecord[], accountList: Account[] }) => {
     const { data: records, isFetching, error } = useRecords(initialData);
     const createMutation = useCreateRecord();
     const updateMutation = useUpdateRecord();
@@ -23,17 +23,20 @@ const RecordsList = ({ initialData }: { initialData: AccountRecord[] }) => {
 
     const handleOnSaveAdd = (data: CreateAccountData) => {
         createMutation.mutate({
-            name: data.name,
+            accountId: data.accountId,
             type: data.type as RecordType,
-            initialAmount: Number(data.initialAmount)
+            amount: Number(data.amount),
+            description: data.description
         });
     }
 
     const handleOnSaveEdit = (data: EditFormData) => {
         updateMutation.mutate({
             id: data.id,
-            name: data.name,
-            type: data.type as RecordType
+            accountId: data.accountId,
+            type: data.type as RecordType,
+            amount: data.amount,
+            description: data.description
         });
     }
 
@@ -55,7 +58,7 @@ const RecordsList = ({ initialData }: { initialData: AccountRecord[] }) => {
     }
     return (
         <div className="space-y-4">
-            <RecordsTable records={records} onSaveAdd={handleOnSaveAdd} onSaveEdit={handleOnSaveEdit} onDelete={handleOnDelete} />
+            <RecordsTable records={records} accountList={accountList} onSaveAdd={handleOnSaveAdd} onSaveEdit={handleOnSaveEdit} onDelete={handleOnDelete} />
             {isFetching && <Spinner />}
         </div>
     );

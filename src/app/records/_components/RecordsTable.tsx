@@ -5,11 +5,12 @@ import EmptyState from "@/components/ui/EmptyState";
 import PageHeader from "@/components/ui/PageHeader";
 import TableHeader from "@/components/ui/tableHeader";
 import TableRow, { type Column } from "@/components/ui/tableRow";
-import { AccountRecord, AccountType } from "@prisma/client";
+import { AccountRecord, RecordType } from "@prisma/client";
+
 import CreateRecordForm from "./CreateRecordForm";
-import { useAccountForms } from "../_hooks/useAccountsForm";
 import EditRecordForm from "./EditRecordForm";
-import { CreateAccountData, EditAccountData } from "@/schemas/account";
+import { CreateRecordData, EditRecordData } from "@/schemas/records";
+import { useRecordForms } from "../_hooks/useRecordsForm";
 
 /* type AccountWithTotal = Account & {
     totalAmount: number
@@ -24,10 +25,10 @@ const columns: Column<AccountRecord>[] = [
     {
         key: 'type',
         className: 'flex-1',
-        transform: (value: unknown) => (value as AccountType).toLowerCase()
+        transform: (value: unknown) => (value as RecordType).toLowerCase()
     },
     {
-        key: 'totalAmount',
+        key: 'amount',
         className: 'flex-1',
         transform: (value: unknown) => `${value} kr`
     }
@@ -35,15 +36,16 @@ const columns: Column<AccountRecord>[] = [
 
 type RecordsTableType = {
     records: AccountRecord[];
-    onSaveAdd: (data: CreateAccountData) => void;
-    onSaveEdit: (data: EditAccountData & {id: string}) => void;
+    accountList: AccountRecord[];
+    onSaveAdd: (data: CreateRecordData) => void;
+    onSaveEdit: (data: EditRecordData & {id: string}) => void;
     onDelete: (id: string) => void;
 }
 
-const RecordsTable = ({ records, onSaveAdd, onSaveEdit, onDelete }: RecordsTableType) => {
+const RecordsTable = ({ records, accountList, onSaveAdd, onSaveEdit, onDelete }: RecordsTableType) => {
     const {
         showAddForm, createForm, editForm, handlers, expandedId
-    } = useAccountForms({ onSaveAdd, onSaveEdit });
+    } = useRecordForms({ onSaveAdd, onSaveEdit });
 
 
     if (!records?.length) {
@@ -66,6 +68,7 @@ const RecordsTable = ({ records, onSaveAdd, onSaveEdit, onDelete }: RecordsTable
                         onSubmit={handlers.onSubmit}
                         onCancel={handlers.handleCancelAddNew}
                         form={createForm}
+                        accountList={accountList}
                     />
                 )}
 
@@ -76,7 +79,7 @@ const RecordsTable = ({ records, onSaveAdd, onSaveEdit, onDelete }: RecordsTable
                             headers={[
                                 { label: 'Name', className: 'flex-1' },
                                 { label: 'Type', className: 'flex-1' },
-                                { label: 'Total Amount', className: 'flex-1' },
+                                { label: 'Amount', className: 'flex-1' },
                                 { label: 'Actions', className: 'flex items-center gap-4' },
                             ]}
                         />
@@ -104,6 +107,7 @@ const RecordsTable = ({ records, onSaveAdd, onSaveEdit, onDelete }: RecordsTable
                                     onSubmit={handlers.onEditSubmit}
                                     onCancel={handlers.handleCancelEdit}
                                     form={editForm}
+                                    accountList={accountList}
                                 />
                             )}
                         </div>
@@ -118,7 +122,7 @@ const RecordsTable = ({ records, onSaveAdd, onSaveEdit, onDelete }: RecordsTable
                             <div className="p-4 hover:bg-gray-25 transition-colors cursor-pointer" onClick={() => handlers.handleEdit(record)}>
                                 <CardRow
                                     title={record.name}
-                                    description={`${record.totalAmount} kr`}
+                                    description={`${record.amount} kr`}
                                     type={record.type}
                                     handleEditButton={(e) => {
                                         e.stopPropagation()
@@ -134,6 +138,7 @@ const RecordsTable = ({ records, onSaveAdd, onSaveEdit, onDelete }: RecordsTable
                                     onSubmit={handlers.onEditSubmit}
                                     onCancel={handlers.handleCancelEdit}
                                     form={editForm}
+                                    accountList={accountList}
                                     isMobile={true}
                                 />
                             )}

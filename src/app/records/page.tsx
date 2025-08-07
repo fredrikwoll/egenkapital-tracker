@@ -11,11 +11,11 @@ async function getData(): Promise<AccountRecord[]> {
     return result as AccountRecord[];
 }
 
-async function getDataList(): Promise<AccountRecord[]> {
+async function getDataList(): Promise<Account[]> {
     // Fetch data from your API here.
-    const result = await prisma.accountRecord.findMany();
+    const result = await prisma.account.findMany();
 
-    return result as AccountRecord[];
+    return result as Account[];
 }
 
 export default async function RecordsPage() {
