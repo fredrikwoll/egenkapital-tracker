@@ -1,6 +1,6 @@
 "use client";
 
-import { CreateRecordData, createRecordSchema, EditRecordData, editRecordSchema } from "@/schemas/records";
+import { CreateRecordData, createRecordSchema } from "@/schemas/records";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AccountRecord } from "@prisma/client";
 import { useState } from "react";
@@ -12,7 +12,7 @@ import { useForm } from "react-hook-form";
 
 type UseRecordFormsProps = {
     onSaveAdd: (data: CreateRecordData) => void;
-    onSaveEdit: (data: EditRecordData & { id: string }) => void;
+    onSaveEdit: (data: CreateRecordData & { id: string }) => void;
 }
 
 export const useRecordForms = ({ onSaveAdd, onSaveEdit }: UseRecordFormsProps) => {
@@ -24,39 +24,21 @@ export const useRecordForms = ({ onSaveAdd, onSaveEdit }: UseRecordFormsProps) =
         defaultValues: { accountId: "", type: "DEPOSIT", amount: 0, description: "" }
     });
 
-    const editForm = useForm<EditRecordData>({
-        resolver: zodResolver(editRecordSchema)
-    });
 
 
     const onSubmit = (data: CreateRecordData) => {
         onSaveAdd(data);
         setShowAddForm(false);
         setExpandedId(null);
-        editForm.reset();
     }
 
-    const onEditSubmit = (data: EditRecordData) => {
-        onSaveEdit({ id: expandedId!, ...data });
-        setShowAddForm(false);
-        setExpandedId(null);
-        editForm.reset();
-    }
 
     const handleEdit = (record: AccountRecord) => {
-
         if (expandedId === record.id) {
             setExpandedId(null);
-            editForm.reset();
-
         } else {
             setShowAddForm(false);
             setExpandedId(record.id);
-
-            editForm.setValue('accountId', record.accountId);
-            editForm.setValue('type', record.type);
-            editForm.setValue('amount', record.amount.toNumber());
-            editForm.setValue('description', record.description ?? '')
         }
     }
 
@@ -68,7 +50,6 @@ export const useRecordForms = ({ onSaveAdd, onSaveEdit }: UseRecordFormsProps) =
     const handleCancelEdit = () => {
         setShowAddForm(false);
         setExpandedId(null);
-        editForm.reset();
     };
 
     const handleCancelAddNew = () => {
@@ -80,8 +61,8 @@ export const useRecordForms = ({ onSaveAdd, onSaveEdit }: UseRecordFormsProps) =
     return {
         expandedId, setExpandedId,
         showAddForm, setShowAddForm,
-        createForm, editForm,
-        handlers: { handleEdit, handleAddNew, onSubmit, onEditSubmit, handleCancelEdit, handleCancelAddNew }
+        createForm,
+        handlers: { handleEdit, handleAddNew, onSubmit, handleCancelEdit, handleCancelAddNew }
     };
 
 }

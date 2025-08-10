@@ -46,7 +46,7 @@ The application uses PostgreSQL with these core models:
 - **Debt**: Debt items (STUDENT_LOAN, CONSUMER_LOAN, MORTGAGE, CREDIT_CARD)
 - **Income**: Income sources
 
-All monetary values use `Decimal` type with precision 12,2. All models use `cuid()` for IDs.
+All monetary values use `Int` type to store amounts in øre (1 kr = 100 øre). All models use `cuid()` for IDs.
 
 ## Architecture
 

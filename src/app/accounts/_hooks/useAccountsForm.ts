@@ -1,6 +1,6 @@
 "use client";
 
-import { CreateAccountData, createAccountSchema, EditAccountData, editAccountSchema } from "@/schemas/account";
+import { CreateAccountData, createAccountSchema } from "@/schemas/account";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Account } from "@prisma/client";
 import { useState } from "react";
@@ -12,7 +12,7 @@ type AccountWithTotal = Account & {
 
 type UseAccountFormsProps = {
     onSaveAdd: (data: CreateAccountData) => void;
-    onSaveEdit: (data: EditAccountData & { id: string }) => void;
+    onSaveEdit: (data: CreateAccountData & { id: string }) => void;
 }
 
 export const useAccountForms = ({ onSaveAdd, onSaveEdit }: UseAccountFormsProps) => {
@@ -24,37 +24,21 @@ export const useAccountForms = ({ onSaveAdd, onSaveEdit }: UseAccountFormsProps)
         defaultValues: { name: "", type: "SAVINGS", initialAmount: 0 }
     });
 
-    const editForm = useForm<EditAccountData>({
-        resolver: zodResolver(editAccountSchema)
-    });
 
 
     const onSubmit = (data: CreateAccountData) => {
         onSaveAdd(data);
         setShowAddForm(false);
         setExpandedId(null);
-        editForm.reset();
     }
 
-    const onEditSubmit = (data: EditAccountData) => {
-        onSaveEdit({ id: expandedId!, ...data });
-        setShowAddForm(false);
-        setExpandedId(null);
-        editForm.reset();
-    }
 
     const handleEdit = (account: AccountWithTotal) => {
-
         if (expandedId === account.id) {
             setExpandedId(null);
-            editForm.reset();
-
         } else {
             setShowAddForm(false);
             setExpandedId(account.id);
-
-            editForm.setValue('name', account.name);
-            editForm.setValue('type', account.type);
         }
     }
 
@@ -66,7 +50,6 @@ export const useAccountForms = ({ onSaveAdd, onSaveEdit }: UseAccountFormsProps)
     const handleCancelEdit = () => {
         setShowAddForm(false);
         setExpandedId(null);
-        editForm.reset();
     };
 
     const handleCancelAddNew = () => {
@@ -78,8 +61,8 @@ export const useAccountForms = ({ onSaveAdd, onSaveEdit }: UseAccountFormsProps)
     return {
         expandedId, setExpandedId,
         showAddForm, setShowAddForm,
-        createForm, editForm,
-        handlers: { handleEdit, handleAddNew, onSubmit, onEditSubmit, handleCancelEdit, handleCancelAddNew }
+        createForm,
+        handlers: { handleEdit, handleAddNew, onSubmit, handleCancelEdit, handleCancelAddNew }
     };
 
 }

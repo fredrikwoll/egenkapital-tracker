@@ -4,13 +4,15 @@ import { useRecords, useCreateRecord, useUpdateRecord, useDeleteRecord } from ".
 import RecordsTable from "./RecordsTable";
 import Spinner from "@/components/ui/Spinner";
 import { useConfirmation } from "@/contexts/ConfirmationContext";
-import { CreateAccountData } from "@/schemas/account";
+import { CreateRecordData } from "@/schemas/records";
 
 
 type EditFormData = {
     id: string;
-    name: string;
+    accountId: string;
     type: RecordType;
+    amount: number;
+    description?: string;
 }
 
 const RecordsList = ({ initialData, accountList }: { initialData: AccountRecord[], accountList: Account[] }) => {
@@ -18,14 +20,14 @@ const RecordsList = ({ initialData, accountList }: { initialData: AccountRecord[
     const createMutation = useCreateRecord();
     const updateMutation = useUpdateRecord();
     const deleteMutation = useDeleteRecord();
-    
+
     const { confirm } = useConfirmation();
 
-    const handleOnSaveAdd = (data: CreateAccountData) => {
+    const handleOnSaveAdd = (data: CreateRecordData) => {
         createMutation.mutate({
             accountId: data.accountId,
             type: data.type as RecordType,
-            amount: Number(data.amount),
+            amount: Number(data.amount) * 100,
             description: data.description
         });
     }
@@ -35,18 +37,18 @@ const RecordsList = ({ initialData, accountList }: { initialData: AccountRecord[
             id: data.id,
             accountId: data.accountId,
             type: data.type as RecordType,
-            amount: data.amount,
+            amount: data.amount * 100,
             description: data.description
         });
     }
 
     const handleOnDelete = async (recordId: string) => {
         const confirmed = await confirm({
-              title: "Delete Record",
-              message: "Are you sure you want to delete this record? This action cannot be undone.",
-              confirmText: "Delete",
-              cancelText: "Cancel"
-          });
+            title: "Delete Record",
+            message: "Are you sure you want to delete this record? This action cannot be undone.",
+            confirmText: "Delete",
+            cancelText: "Cancel"
+        });
         if (confirmed) {
             deleteMutation.mutate({ id: recordId });
         }

@@ -4,13 +4,11 @@ import { useAccounts, useCreateAccount, useDeleteAccount, useUpdateAccount } fro
 import AccountsTable from "./accountsTable";
 import Spinner from "@/components/ui/Spinner";
 import { useConfirmation } from "@/contexts/ConfirmationContext";
-import { CreateAccountData } from "@/schemas/account";
+import { CreateAccountData, EditAccountData } from "@/schemas/account";
 
 
-type EditFormData = {
+type EditFormData = EditAccountData & {
     id: string;
-    name: string;
-    type: AccountType;
 }
 
 const AccountsList = ({ initialData }: { initialData: Account[] }) => {

@@ -29,7 +29,7 @@ const columns: Column<AccountWithTotal>[] = [
     {
         key: 'totalAmount',
         className: 'flex-1',
-        transform: (value: unknown) => `${value} kr`
+        transform: (value: unknown) => `${(value as number / 100).toFixed(2)} kr`
     }
 ];
 
@@ -41,8 +41,9 @@ type AccountsTableType = {
 }
 
 const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTableType) => {
+    
     const {
-        showAddForm, createForm, editForm, handlers, expandedId
+        showAddForm, createForm, handlers, expandedId
     } = useAccountForms({ onSaveAdd, onSaveEdit });
 
 
@@ -100,10 +101,10 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
                             {/* Edit Form */}
                             {expandedId === account.id && (
                                 <EditAccountForm
-                                    account={account}           // ← Pass the account
-                                    onSubmit={handlers.onEditSubmit}
+                                    key={account.id}
+                                    account={account}
+                                    onSubmit={onSaveEdit}
                                     onCancel={handlers.handleCancelEdit}
-                                    form={editForm}
                                 />
                             )}
                         </div>
@@ -118,7 +119,7 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
                             <div className="p-4 hover:bg-gray-25 transition-colors cursor-pointer" onClick={() => handlers.handleEdit(account)}>
                                 <CardRow
                                     title={account.name}
-                                    description={`${account.totalAmount} kr`}
+                                    description={`${(account.totalAmount / 100).toFixed(2)} kr`}
                                     type={account.type}
                                     handleEditButton={(e) => {
                                         e.stopPropagation()
@@ -130,10 +131,10 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
                             {/* Mobile Edit Form */}
                             {expandedId === account.id && (
                                 <EditAccountForm
-                                    account={account}           // ← Pass the account
-                                    onSubmit={handlers.onEditSubmit}
+                                    key={account.id}
+                                    account={account}
+                                    onSubmit={onSaveEdit}
                                     onCancel={handlers.handleCancelEdit}
-                                    form={editForm}
                                     isMobile={true}
                                 />
                             )}

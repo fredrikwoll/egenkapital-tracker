@@ -49,6 +49,7 @@ const CreateAccountForm = ({ onSubmit, onCancel, form }: CreateAccountFormProps)
                                 <Input
                                     {...register("initialAmount")}
                                     type="number"
+                                    step="0.01"
                                     placeholder="0"
                                 />
                                 <span className="absolute right-3 top-2 text-sm text-gray-500">kr</span>

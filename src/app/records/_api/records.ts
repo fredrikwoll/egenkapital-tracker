@@ -30,11 +30,10 @@ export async function createRecord(data: {accountId: string, type: string, amoun
 
 
 export async function updateRecord(data: {id: string, accountId: string, type: string, amount: number, description: string}){
-    const response = await fetch(`${baseUrl}/api/records`, {
+    const response = await fetch(`${baseUrl}/api/records/${data.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json'},
         body: JSON.stringify({
-            id: data.id,
             accountId: data.accountId,
             type: data.type,
             amount: data.amount,

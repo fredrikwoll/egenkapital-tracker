@@ -5,9 +5,10 @@ import Select from "@/components/forms/Select";
 import Button from "@/components/ui/Button";
 import ButtonGroup from "@/components/ui/ButtonGroup";
 import SectionHeader from "@/components/ui/SectionHeader";
-import { EditAccountData } from "@/schemas/account";
+import { EditAccountData, editAccountSchema } from "@/schemas/account";
 import { Account } from "@prisma/client";
-import { UseFormReturn } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 type AccountWithTotal = Account & {
     totalAmount: number
@@ -15,20 +16,33 @@ type AccountWithTotal = Account & {
 
 type EditAccountFormProps = {
     account: AccountWithTotal;
-    onSubmit: (data: EditAccountData) => void;
+    onSubmit: (data: EditAccountData & { id: string }) => void;
     onCancel: () => void;
-    form: UseFormReturn<EditAccountData>;
     isMobile?: boolean;
 }
 
-const EditAccountForm = ({ account, onSubmit, onCancel, form, isMobile = false }: EditAccountFormProps) => {
+const EditAccountForm = ({ account, onSubmit, onCancel, isMobile = false }: EditAccountFormProps) => {
+    // Create fresh form instance with account data as defaultValues
+    const form = useForm<EditAccountData>({
+        resolver: zodResolver(editAccountSchema),
+        defaultValues: {
+            name: account.name,
+            type: account.type
+        }
+    });
+    
     const { register, handleSubmit, formState: { errors, isSubmitting } } = form;
+    
+    const onFormSubmit = (data: EditAccountData) => {
+        onSubmit({ ...data, id: account.id });
+        onCancel(); // Close the form after successful submit
+    };
 
     return (
         <div className={`bg-card border-t border-gray-100 ${isMobile ? 'px-4 py-4' : 'px-6 py-4'} animate-in slide-in-from-top-2 duration-200`}>
             <div className="px-4 md:px-6 py-4">
                 <SectionHeader title="Create New Account" />
-                <form onSubmit={handleSubmit(onSubmit)} className="max-w-2xl">
+                <form onSubmit={handleSubmit(onFormSubmit)} className="max-w-2xl">
                     <div className={isMobile ? 'space-y-4' : 'grid grid-cols-1 md:grid-cols-3 gap-4'}>
                         <FormField label="Account Name" required={true}>
                             <Input

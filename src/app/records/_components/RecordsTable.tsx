@@ -5,38 +5,23 @@ import EmptyState from "@/components/ui/EmptyState";
 import PageHeader from "@/components/ui/PageHeader";
 import TableHeader from "@/components/ui/tableHeader";
 import TableRow, { type Column } from "@/components/ui/tableRow";
-import { AccountRecord, RecordType } from "@prisma/client";
+import { Account, AccountRecord, RecordType } from "@prisma/client";
 
 import CreateRecordForm from "./CreateRecordForm";
 import EditRecordForm from "./EditRecordForm";
 import { CreateRecordData, EditRecordData } from "@/schemas/records";
 import { useRecordForms } from "../_hooks/useRecordsForm";
+import { formatAmount } from "@/lib/utils";
 
 /* type AccountWithTotal = Account & {
     totalAmount: number
 } */
 
-// Define your columns configuration
-const columns: Column<AccountRecord>[] = [
-    {
-        key: 'name',
-        className: 'flex-1'
-    },
-    {
-        key: 'type',
-        className: 'flex-1',
-        transform: (value: unknown) => (value as RecordType).toLowerCase()
-    },
-    {
-        key: 'amount',
-        className: 'flex-1',
-        transform: (value: unknown) => `${value} kr`
-    }
-];
+
 
 type RecordsTableType = {
     records: AccountRecord[];
-    accountList: AccountRecord[];
+    accountList: Account[];
     onSaveAdd: (data: CreateRecordData) => void;
     onSaveEdit: (data: EditRecordData & {id: string}) => void;
     onDelete: (id: string) => void;
@@ -44,13 +29,40 @@ type RecordsTableType = {
 
 const RecordsTable = ({ records, accountList, onSaveAdd, onSaveEdit, onDelete }: RecordsTableType) => {
     const {
-        showAddForm, createForm, editForm, handlers, expandedId
+        showAddForm, createForm, handlers, expandedId
     } = useRecordForms({ onSaveAdd, onSaveEdit });
+
+
+    // Define your columns configuration
+    const columns: Column<AccountRecord>[] = [
+        {
+            key: 'accountId',
+            className: 'flex-1',
+            transform: (value: unknown) => {
+                const accountId = value as string;
+                const account = accountList?.find(acc => acc.id === accountId);
+
+                return account ? account.name : 'Unkown Account';
+            }
+        },
+        {
+            key: 'type',
+            className: 'flex-1',
+            transform: (value: unknown) => (value as RecordType).toLowerCase()
+        },
+        {
+            key: 'amount',
+            className: 'flex-1',
+            transform: (value: unknown) => `${formatAmount(value as number)}`
+        }
+    ];
 
 
     if (!records?.length) {
         return <div>No records to display</div>;
     }
+
+
 
     return (
         <> {/* Header */}
@@ -103,10 +115,10 @@ const RecordsTable = ({ records, accountList, onSaveAdd, onSaveEdit, onDelete }:
                             {/* Edit Form */}
                             {expandedId === record.id && (
                                 <EditRecordForm
+                                    key={record.id}          // ← Force re-render per record
                                     record={record}           // ← Pass the account
-                                    onSubmit={handlers.onEditSubmit}
+                                    onSubmit={onSaveEdit}
                                     onCancel={handlers.handleCancelEdit}
-                                    form={editForm}
                                     accountList={accountList}
                                 />
                             )}
@@ -122,7 +134,7 @@ const RecordsTable = ({ records, accountList, onSaveAdd, onSaveEdit, onDelete }:
                             <div className="p-4 hover:bg-gray-25 transition-colors cursor-pointer" onClick={() => handlers.handleEdit(record)}>
                                 <CardRow
                                     title={record.name}
-                                    description={`${record.amount} kr`}
+                                    description={formatAmount(record.amount)}
                                     type={record.type}
                                     handleEditButton={(e) => {
                                         e.stopPropagation()
@@ -134,10 +146,10 @@ const RecordsTable = ({ records, accountList, onSaveAdd, onSaveEdit, onDelete }:
                             {/* Mobile Edit Form */}
                             {expandedId === record.id && (
                                 <EditRecordForm
+                                    key={record.id}          // ← Force re-render per record
                                     record={record}           // ← Pass the account
-                                    onSubmit={handlers.onEditSubmit}
+                                    onSubmit={onSaveEdit}
                                     onCancel={handlers.handleCancelEdit}
-                                    form={editForm}
                                     accountList={accountList}
                                     isMobile={true}
                                 />
