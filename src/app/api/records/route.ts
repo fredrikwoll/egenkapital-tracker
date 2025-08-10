@@ -1,6 +1,5 @@
 "use server";
 import { prisma } from '@/lib/prisma'
-import { transformAmount } from '@/lib/utils';
 import { RecordType } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from "zod";
@@ -9,7 +8,7 @@ export async function GET(){
 
     try {
         const result = await prisma.accountRecord.findMany({});
-        return NextResponse.json(transformAmount(result),{status: 200}) ;
+        return NextResponse.json(result,{status: 200}) ;
     } catch (error) {
         return NextResponse.json({error: "Could not fetch any Records", original: (error as Error).message}, {status: 500});
     }
@@ -51,7 +50,7 @@ export async function POST(request: NextRequest){
             }
         });
 
-        return NextResponse.json(transformAmount(result), {status: 200});
+        return NextResponse.json(result, {status: 200});
     } catch (error) {
         console.log(error);
         return NextResponse.json({error: "Could not create or update AccountRecord", original: (error as Error).message}, {status: 500});

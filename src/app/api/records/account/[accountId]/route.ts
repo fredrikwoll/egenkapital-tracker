@@ -1,7 +1,6 @@
 "use server";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import { transformAmount } from "@/lib/utils";
 
 type AccountRecordParams = {
     params: Promise<{ 
@@ -25,7 +24,7 @@ export async function GET(request: NextRequest, { params }: AccountRecordParams)
             }, { status: 404 }); // ← 404 for "not found"
         }
 
-        return NextResponse.json(transformAmount(result),{status: 200}) ;
+        return NextResponse.json(result,{status: 200}) ;
     } catch (error) {
         return NextResponse.json({error: `Could not fetch any Account Record with accountId: ${accountId}`, original: (error as Error).message}, {status: 500});
     }

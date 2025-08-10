@@ -1,6 +1,5 @@
 "use server";
 import { prisma } from "@/lib/prisma";
-import { transformAmount } from "@/lib/utils";
 import { DebtType } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
@@ -53,7 +52,7 @@ export async function GET(request: NextRequest, { params }: AccountParams){
             }, { status: 404 }); // ← 404 for "not found"
         }
 
-        return NextResponse.json(transformAmount(result),{status: 200}) ;
+        return NextResponse.json(result,{status: 200}) ;
     } catch (error) {
         return NextResponse.json({error: `Could not fetch any Debt with id: ${id}`, original: (error as Error).message}, {status: 500});
     }
@@ -88,7 +87,7 @@ export async function PATCH(request: NextRequest, { params }: AccountParams){
             }
         });
 
-        return NextResponse.json(transformAmount(result), {status: 200});
+        return NextResponse.json(result, {status: 200});
     } catch (error) {
         return NextResponse.json({error: `Could create or update Debt with id: ${id}`, original: (error as Error).message}, {status: 500});
 

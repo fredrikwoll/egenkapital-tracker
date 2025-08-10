@@ -3,7 +3,6 @@ import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { RecordType } from '@prisma/client';
 import { z } from "zod";
-import { transformAmount } from "@/lib/utils";
 
 type AccountRecordParams = {
     params: Promise<{ 
@@ -28,7 +27,7 @@ export async function DELETE(request: NextRequest, { params }: AccountRecordPara
         const result = await prisma.accountRecord.delete({
             where: { id }
         });
-        return NextResponse.json(transformAmount(result),{status: 200});
+        return NextResponse.json(result,{status: 200});
         
     } catch (error) {
         return NextResponse.json({error: "Could not fetch any Account Records", original: (error as Error).message}, {status: 500});
@@ -54,7 +53,7 @@ export async function GET(request: NextRequest, { params }: AccountRecordParams)
             }, { status: 404 }); // ← 404 for "not found"
         }
 
-        return NextResponse.json(transformAmount(result),{status: 200}) ;
+        return NextResponse.json(result,{status: 200}) ;
     } catch (error) {
         return NextResponse.json({error: `Could not fetch any Account Record with id: ${id}`, original: (error as Error).message}, {status: 500});
     }
@@ -90,7 +89,7 @@ export async function PATCH(request: NextRequest, { params }: AccountRecordParam
             }
         });
 
-        return NextResponse.json(transformAmount(result), {status: 200});
+        return NextResponse.json(result, {status: 200});
     } catch (error) {
         return NextResponse.json({error: `Could create or update Account Record with id: ${id}`, original: (error as Error).message}, {status: 500});
 

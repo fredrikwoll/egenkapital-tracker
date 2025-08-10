@@ -23,7 +23,7 @@ export async function GET() {
         count.forEach(record => lookupMap.set(record.accountId, record._sum.amount));
 
         //Adding totalAmount to the array of accounts
-        const updatedResult = await result.map(account => ({ ...account, totalAmount: lookupMap.get(account.id)?.toNumber() || 0 }));
+        const updatedResult = await result.map(account => ({ ...account, totalAmount: lookupMap.get(account.id) || 0 }));
 
         return NextResponse.json(updatedResult, { status: 200 });
     } catch (error) {
@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
                 data: {
                     accountId: result.id,
                     type: 'DEPOSIT',
-                    amount: initialAmount,
+                    amount: initialAmount * 100,
                     description: 'Initial amount'
                 }
             })

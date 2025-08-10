@@ -1,25 +1,10 @@
-import { Decimal } from '@prisma/client/runtime/library';
+// Format øre amount to kroner display (e.g., 12595 øre -> "125.95 kr")
+export function formatAmount(øreAmount: number): string {
+    return `${(øreAmount / 100).toFixed(2)} kr`;
+}
 
-type WithDecimalAmount = {
-    amount: Decimal;
-};
-
-type WithNumberAmount<T> = Omit<T, 'amount'> & { amount: number };
-
-// Overloads for bedre type inference
-export function transformAmount<T extends WithDecimalAmount>(data: T[]): WithNumberAmount<T>[];
-export function transformAmount<T extends WithDecimalAmount>(data: T): WithNumberAmount<T>;
-export function transformAmount<T extends WithDecimalAmount>(
-    data: T | T[]
-): WithNumberAmount<T> | WithNumberAmount<T>[] {
-    const transform = (item: T): WithNumberAmount<T> => ({
-        ...item,
-        amount: item.amount.toNumber()
-    });
-    
-    if (Array.isArray(data)) {
-        return data.map(transform);
-    }
-    
-    return transform(data);
+// Parse kroner input to øre (e.g., "125.95" -> 12595 øre)
+export function parseAmount(kronerInput: string | number): number {
+    const amount = typeof kronerInput === 'string' ? parseFloat(kronerInput) : kronerInput;
+    return Math.round(amount * 100);
 }
