@@ -20,9 +20,10 @@ I need a better way to track how much money I have for a down payment on a prope
 ## Functionality
 ### Core
 - [x] Accounts with types (stock savings account, savings account, etc.)
-- [ ] Records/history per account
-- [ ] Debt overview
-- [ ] Income management
+- [x] Records/history per account
+- [x] Debt overview
+- [x] Income management
+- [x] Settings management (currency, date/number formats)
 - [ ] Loan simulator
 - [ ] Dashboard with overview
 
@@ -52,7 +53,7 @@ I need a better way to track how much money I have for a down payment on a prope
 
 ### Fase 4: Dashboard
 - [ ] Overview of equity capital
-- [ ] Debt and inncome overview
+- [x] Debt and income overview
 - [ ] Basic stats
 
 ### Fase 5: Onboarding
@@ -76,6 +77,7 @@ I need a better way to track how much money I have for a down payment on a prope
 - [x] `account_records` - Historical values
 - [x] `debt` - Debt items
 - [x] `income` - Income
+- [x] `settings` - Application settings
 - [ ] `users` - Future use
 
 ## API Endpoints
@@ -106,6 +108,10 @@ I need a better way to track how much money I have for a down payment on a prope
 - [x] `GET /api/income/[id]` - Get specific income
 - [x] `PATCH /api/income/[id]` - Update income
 - [x] `DELETE /api/income/[id]` - Delete income
+
+### Settings
+- [x] `GET /api/settings` - Get settings
+- [x] `PATCH /api/settings` - Update settings
 
 ### Calculations
 - [ ] `POST /api/calculate/loan-capacity` - Loan capacity
