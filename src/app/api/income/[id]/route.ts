@@ -75,13 +75,14 @@ export async function PATCH(request: NextRequest, { params }: AccountParams){
         }
         const validatedData: AccountFormValidate = validation.data;
 
-        const {name, amount} = validatedData;
+        const {name, amount, frequency} = validatedData;
 
         const result = await prisma.income.update({
             where: { id },
             data: {
                 name,
-                amount
+                amount,
+                frequency
             }
         });
 
