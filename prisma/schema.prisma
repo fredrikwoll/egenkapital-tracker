@@ -77,3 +77,13 @@ model Income {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Settings {
+  id            String   @id @default(cuid())
+  currency      String   @default("NOK")
+  dateFormat    String   @default("DD/MM/YYYY")
+  numberFormat  String   @default("1 234,56")
+  currencyDisplay String @default("symbol")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}

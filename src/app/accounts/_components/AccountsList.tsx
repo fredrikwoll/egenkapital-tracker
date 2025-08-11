@@ -1,10 +1,10 @@
 "use client";
 import { Account, AccountType } from "@prisma/client";
 import { useAccounts, useCreateAccount, useDeleteAccount, useUpdateAccount } from "../_hooks/useAccounts";
-import AccountsTable from "./accountsTable";
 import Spinner from "@/components/ui/Spinner";
 import { useConfirmation } from "@/contexts/ConfirmationContext";
 import { CreateAccountData, EditAccountData } from "@/schemas/account";
+import AccountsTable from "./AccountsTable";
 
 
 type EditFormData = EditAccountData & {
