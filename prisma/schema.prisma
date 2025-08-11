@@ -29,6 +29,12 @@ enum RecordType {
   TRANSFER
 }
 
+enum IncomeFrequency {
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
 model Account {
   id        String   @id @default(cuid())
   name      String
@@ -67,6 +73,7 @@ model Income {
   id        String   @id @default(cuid())
   name      String   @default("Income")
   amount    Int      // Amount in øre (1 kr = 100 øre)
+  frequency IncomeFrequency @default(MONTHLY)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

@@ -21,7 +21,7 @@ describe('API Request: income', () => {
     it('Should return an array with accounts when income exist', async () => {
 
         await prisma.income.create({
-            data: { name: 'My income', amount: 25000 }
+            data: { name: 'My income', amount: 25000, frequency: 'MONTHLY' }
         });
 
         const response = await GET();
@@ -31,13 +31,14 @@ describe('API Request: income', () => {
         expect(data).toHaveLength(1);
         expect(data[0]).toHaveProperty('name', 'My income');
         expect(data[0]).toHaveProperty('amount', 25000);
+        expect(data[0]).toHaveProperty('frequency', 'MONTHLY');
 
     });
 
     it('Should create new income entry with correct data', async () => {
         const postRequest = new NextRequest('http://localhost:3000/api/income', {
             method: 'POST',
-            body: JSON.stringify({ name: 'My income', amount: 25000 }),
+            body: JSON.stringify({ name: 'My income', amount: 25000, frequency: 'WEEKLY' }),
             headers: { 'Content-Type': 'application/json' }
         });
 
@@ -48,6 +49,7 @@ describe('API Request: income', () => {
         expect(createdIncome).toHaveProperty('id');
         expect(createdIncome).toHaveProperty('name', 'My income');
         expect(createdIncome).toHaveProperty('amount', 25000);
+        expect(createdIncome).toHaveProperty('frequency', 'WEEKLY');
         expect(createdIncome).toHaveProperty('createdAt');
         expect(createdIncome).toHaveProperty('updatedAt');
 
@@ -66,7 +68,8 @@ describe('API Request: income', () => {
         const updateData = {
             id: createdIncome.id,
             name: 'My income',
-            amount: 22000
+            amount: 22000,
+            frequency: 'YEARLY'
         };
 
         const postUpdateRequest = new NextRequest(`http://localhost:3000/api/income/test-account-id`, {
@@ -87,6 +90,7 @@ describe('API Request: income', () => {
         expect(responseUpdate.status).toBe(200);
         expect(updateAccount).toHaveProperty('name', 'My income');
         expect(updateAccount).toHaveProperty('amount', 22000);
+        expect(updateAccount).toHaveProperty('frequency', 'YEARLY');
         expect(updateAccount).not.toHaveProperty('updatedAt', createdIncome.updatedAt);
 
     })

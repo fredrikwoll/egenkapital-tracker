@@ -1,4 +1,5 @@
 "use server";
+import { IncomeFrequency } from '@prisma/client';
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
@@ -11,6 +12,7 @@ type AccountParams = {
 const FormIncomeSchema = z.object({
     id: z.string().optional(),
     name: z.string().optional(),
+    frequency: z.nativeEnum(IncomeFrequency),
     amount: z.coerce.number()
 });
 

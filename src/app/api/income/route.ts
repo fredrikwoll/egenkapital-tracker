@@ -1,5 +1,6 @@
 "use server";
 import { prisma } from '@/lib/prisma'
+import { IncomeFrequency } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from "zod";
 
@@ -17,6 +18,7 @@ export async function GET(){
 const FormIncomeSchema = z.object({
     id: z.string().optional(),
     name: z.string().optional(),
+    frequency: z.nativeEnum(IncomeFrequency),
     amount: z.coerce.number()
 });
 
@@ -37,7 +39,8 @@ export async function POST(request: NextRequest){
         const result = await prisma.income.create({
             data: {
                 name: validatedData.name,
-                amount: validatedData.amount
+                amount: validatedData.amount,
+                frequency: validatedData.frequency
             }
         });
         return NextResponse.json(result, {status: 200});
