@@ -113,7 +113,7 @@ const DebtTable = ({ debts, onSaveAdd, onSaveEdit, onDelete }: DebtTableType) =>
                     {debts.map((debt) => (
                         <div key={debt.id}>
                             {/* Mobile Card */}
-                            <div className="p-4 hover:bg-gray-25 transition-colors cursor-pointer" onClick={() => handlers.handleEdit(account)}>
+                            <div className="p-4 hover:bg-gray-25 transition-colors cursor-pointer" onClick={() => handlers.handleEdit(debt)}>
                                 <CardRow
                                     title={debt.name}
                                     description={`${(debt.amount / 100).toFixed(2)} kr`}
