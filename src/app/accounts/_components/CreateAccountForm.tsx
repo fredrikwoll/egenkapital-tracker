@@ -47,10 +47,11 @@ const CreateAccountForm = ({ onSubmit, onCancel, form }: CreateAccountFormProps)
                         <FormField label="Inital Amount">
                             <div className="relative">
                                 <Input
-                                    {...register("initialAmount")}
-                                    type="number"
-                                    step="0.01"
-                                    placeholder="0"
+                                    {...register("initialAmount", {
+                                        setValueAs: (value) => parseFloat(value) || 0
+                                    })}
+                                    type="text"
+                                    placeholder="0.00"
                                 />
                                 <span className="absolute right-3 top-2 text-sm text-gray-500">kr</span>
                             </div>

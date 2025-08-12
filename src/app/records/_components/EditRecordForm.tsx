@@ -26,7 +26,6 @@ const EditRecordForm = ({ record, onSubmit, onCancel, accountList, isMobile = fa
         defaultValues: {
             accountId: record.accountId,
             type: record.type,
-            amount: record.amount / 100, // Convert øre to kroner for display
             description: record.description ?? ''
         }
     });
@@ -68,10 +67,12 @@ const EditRecordForm = ({ record, onSubmit, onCancel, accountList, isMobile = fa
                         <FormField label="Amount">
                             <div className="relative">
                                 <Input
-                                    {...register("amount")}
-                                    type="number"
-                                    step="0.01"
-                                    placeholder="0"
+                                    {...register("amount", {
+                                        setValueAs: (value) => parseFloat(value) || 0
+                                    })}
+                                    type="text"
+                                    placeholder="0.00"
+                                    defaultValue={(record.amount / 100).toFixed(2)}
                                 />
                                 <span className="absolute right-3 top-2 text-sm text-gray-500">kr</span>
                             </div>

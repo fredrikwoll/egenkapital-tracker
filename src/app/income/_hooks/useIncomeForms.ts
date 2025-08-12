@@ -24,7 +24,12 @@ export const useIncomeForms = ({ onSaveAdd, onSaveEdit }: UseIncomeFormsProps) =
 
 
     const onSubmit = (data: CreateIncomeData) => {
-        onSaveAdd(data);
+        // Convert kroner to øre for storage
+        const dataWithOre = {
+            ...data,
+            amount: Math.round(data.amount * 100)
+        };
+        onSaveAdd(dataWithOre);
         setShowAddForm(false);
         setExpandedId(null);
     }

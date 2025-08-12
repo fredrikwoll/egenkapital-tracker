@@ -23,15 +23,20 @@ const EditDebtForm = ({ debt, onSubmit, onCancel, isMobile = false }: EditDebtFo
         resolver: zodResolver(editDebtSchema),
         defaultValues: {
             name: debt.name,
-            type: debt.type,
-            amount: debt.amount
+            type: debt.type
         }
     });
     
     const { register, handleSubmit, formState: { errors, isSubmitting } } = form;
     
     const onFormSubmit = (data: EditDebtData) => {
-        onSubmit({ ...data, id: debt.id });
+        // Convert kroner back to øre for storage
+        const dataWithOre = {
+            ...data,
+            amount: Math.round(data.amount * 100),
+            id: debt.id
+        };
+        onSubmit(dataWithOre);
         onCancel(); // Close the form after successful submit
     };
 
@@ -65,10 +70,12 @@ const EditDebtForm = ({ debt, onSubmit, onCancel, isMobile = false }: EditDebtFo
                         <FormField label="Amount">
                             <div className="relative">
                                 <Input
-                                    {...register("amount")}
-                                    type="number"
-                                    step="0.01"
-                                    placeholder="0"
+                                    {...register("amount", {
+                                        setValueAs: (value) => parseFloat(value) || 0
+                                    })}
+                                    type="text"
+                                    placeholder="0.00"
+                                    defaultValue={(debt.amount / 100).toFixed(2)}
                                 />
                                 <span className="absolute right-3 top-2 text-sm text-gray-500">kr</span>
                             </div>

@@ -24,15 +24,20 @@ const EditIncomeForm = ({ income, onSubmit, onCancel, isMobile = false }: EditIn
         resolver: zodResolver(editIncomeSchema),
         defaultValues: {
             name: income.name,
-            frequency: income.frequency,
-            amount: income.amount
+            frequency: income.frequency
         }
     });
     
     const { register, handleSubmit, formState: { errors, isSubmitting } } = form;
     
     const onFormSubmit = (data: EditIncomeData) => {
-        onSubmit({ ...data, id: income.id });
+        // Convert kroner back to øre for storage
+        const dataWithOre = {
+            ...data,
+            amount: Math.round(data.amount * 100),
+            id: income.id
+        };
+        onSubmit(dataWithOre);
         onCancel(); // Close the form after successful submit
     };
 
@@ -65,10 +70,12 @@ const EditIncomeForm = ({ income, onSubmit, onCancel, isMobile = false }: EditIn
                         <FormField label="Amount">
                             <div className="relative">
                                 <Input
-                                    {...register("amount")}
-                                    type="number"
-                                    step="0.01"
-                                    placeholder="0"
+                                    {...register("amount", {
+                                        setValueAs: (value) => parseFloat(value) || 0
+                                    })}
+                                    type="text"
+                                    placeholder="0.00"
+                                    defaultValue={(income.amount / 100).toFixed(2)}
                                 />
                                 <span className="absolute right-3 top-2 text-sm text-gray-500">kr</span>
                             </div>
