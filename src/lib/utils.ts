@@ -67,3 +67,25 @@ export function parseAmount(kronerInput: string | number): number {
     const amount = typeof kronerInput === 'string' ? parseFloat(kronerInput) : kronerInput;
     return Math.round(amount * 100);
 }
+
+// Format date according to user's date format setting
+export function formatDateWithSettings(date: Date | string, dateFormat: string): string {
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    
+    const day = dateObj.getDate().toString().padStart(2, '0');
+    const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+    const year = dateObj.getFullYear().toString();
+    
+    switch (dateFormat) {
+        case 'DD/MM/YYYY':
+            return `${day}/${month}/${year}`;
+        case 'MM/DD/YYYY':
+            return `${month}/${day}/${year}`;
+        case 'YYYY-MM-DD':
+            return `${year}-${month}-${day}`;
+        case 'DD.MM.YYYY':
+            return `${day}.${month}.${year}`;
+        default:
+            return `${day}/${month}/${year}`; // Default to DD/MM/YYYY
+    }
+}

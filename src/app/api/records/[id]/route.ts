@@ -14,7 +14,8 @@ const FormAccountRecordSchema = z.object({
     accountId: z.string(),
     type: z.nativeEnum(RecordType).optional(),
     amount: z.coerce.number(),
-    description: z.string().optional()
+    description: z.string().optional(),
+    date: z.coerce.date().optional()
 });
 
 type CreateAccountRecordFormValidate = z.infer<typeof FormAccountRecordSchema>;
@@ -77,7 +78,7 @@ export async function PATCH(request: NextRequest, { params }: AccountRecordParam
         }
         const validatedData: UpdateAccountFormValidate = validation.data;
 
-        const {accountId, type, amount, description} = validatedData;
+        const {accountId, type, amount, description, date} = validatedData;
 
         const result = await prisma.accountRecord.update({
             where: { id },
@@ -85,7 +86,8 @@ export async function PATCH(request: NextRequest, { params }: AccountRecordParam
                 accountId,
                 type,
                 amount,
-                ...(description !== undefined && { description: description })
+                ...(description !== undefined && { description: description }),
+                ...(date !== undefined && { date: date })
             }
         });
 

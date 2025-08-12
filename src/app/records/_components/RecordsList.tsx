@@ -13,6 +13,7 @@ type EditFormData = {
     type: RecordType;
     amount: number;
     description?: string;
+    date: Date;
 }
 
 const RecordsList = ({ initialData, accountList }: { initialData: AccountRecord[], accountList: Account[] }) => {
@@ -37,8 +38,9 @@ const RecordsList = ({ initialData, accountList }: { initialData: AccountRecord[
             id: data.id,
             accountId: data.accountId,
             type: data.type as RecordType,
-            amount: data.amount * 100,
-            description: data.description
+            amount: data.amount, // Already converted to øre in the form
+            description: data.description || '',
+            date: data.date
         });
     }
 

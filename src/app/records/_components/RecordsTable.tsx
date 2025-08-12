@@ -11,7 +11,7 @@ import CreateRecordForm from "./CreateRecordForm";
 import EditRecordForm from "./EditRecordForm";
 import { CreateRecordData, EditRecordData } from "@/schemas/records";
 import { useRecordForms } from "../_hooks/useRecordsForm";
-import { useFormatAmount } from "@/contexts/SettingsContext";
+import { useFormatAmount, useFormatDate } from "@/contexts/SettingsContext";
 
 /* type AccountWithTotal = Account & {
     totalAmount: number
@@ -29,6 +29,7 @@ type RecordsTableType = {
 
 const RecordsTable = ({ records, accountList, onSaveAdd, onSaveEdit, onDelete }: RecordsTableType) => {
     const formatAmount = useFormatAmount();
+    const formatDate = useFormatDate();
     
     const {
         showAddForm, createForm, handlers, expandedId
@@ -56,6 +57,11 @@ const RecordsTable = ({ records, accountList, onSaveAdd, onSaveEdit, onDelete }:
             key: 'amount',
             className: 'flex-1',
             transform: (value: unknown) => formatAmount(value as number)
+        },
+        {
+            key: 'date',
+            className: 'flex-1',
+            transform: (value: unknown) => formatDate(value as string)
         }
     ];
 
@@ -91,9 +97,10 @@ const RecordsTable = ({ records, accountList, onSaveAdd, onSaveEdit, onDelete }:
                     <div className="group hover:bg-gray-25 transition-colors cursor-pointer">
                         <TableHeader
                             headers={[
-                                { label: 'Name', className: 'flex-1' },
+                                { label: 'Account', className: 'flex-1' },
                                 { label: 'Type', className: 'flex-1' },
                                 { label: 'Amount', className: 'flex-1' },
+                                { label: 'Date', className: 'flex-1' },
                                 { label: 'Actions', className: 'flex items-center gap-4' },
                             ]}
                         />

@@ -5,7 +5,10 @@ const baseRecordSchema = z.object({
     accountId: z.string(),
     type: z.nativeEnum(RecordType),
     amount: z.coerce.number(),
-    description: z.string()
+    description: z.string(),
+    date: z.union([z.string(), z.date()]).transform((val) => {
+        return typeof val === 'string' ? new Date(val) : val;
+    })
 });
 
 export const createRecordSchema = baseRecordSchema;

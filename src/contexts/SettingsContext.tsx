@@ -103,3 +103,21 @@ export function useFormatAmount() {
         }
     };
 }
+
+// Custom hook for formatting dates with current user settings
+export function useFormatDate() {
+    const { settings } = useSettings();
+    
+    return (date: Date | string): string => {
+        try {
+            const dateFormat = settings?.dateFormat || 'DD/MM/YYYY';
+            const { formatDateWithSettings } = require('@/lib/utils');
+            return formatDateWithSettings(date, dateFormat);
+        } catch (error) {
+            console.error('Error formatting date:', error);
+            // Ultimate fallback - basic format
+            const dateObj = typeof date === 'string' ? new Date(date) : date;
+            return dateObj.toLocaleDateString();
+        }
+    };
+}

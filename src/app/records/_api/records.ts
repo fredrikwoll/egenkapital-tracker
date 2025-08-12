@@ -29,7 +29,7 @@ export async function createRecord(data: {accountId: string, type: string, amoun
 }
 
 
-export async function updateRecord(data: {id: string, accountId: string, type: string, amount: number, description: string}){
+export async function updateRecord(data: {id: string, accountId: string, type: string, amount: number, description: string, date: Date}){
     const response = await fetch(`${baseUrl}/api/records/${data.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json'},
@@ -37,7 +37,8 @@ export async function updateRecord(data: {id: string, accountId: string, type: s
             accountId: data.accountId,
             type: data.type,
             amount: data.amount,
-            description: data.description
+            description: data.description,
+            date: data.date
         })
     });
 

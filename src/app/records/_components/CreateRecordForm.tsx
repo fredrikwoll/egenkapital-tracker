@@ -1,5 +1,6 @@
 import FormField from "@/components/forms/FormField";
 import Input from "@/components/forms/Input";
+import DateInput from "@/components/forms/DateInput";
 import Select from "@/components/forms/Select";
 import Button from "@/components/ui/Button";
 import ButtonGroup from "@/components/ui/ButtonGroup";
@@ -57,6 +58,14 @@ const CreateRecordForm = ({ onSubmit, onCancel, form, accountList }: CreateRecor
                                 <span className="absolute right-3 top-2 text-sm text-gray-500">kr</span>
                             </div>
                             {errors.amount && <span className="text-red-500 text-sm">{errors.amount.message}</span>}
+                        </FormField>
+
+                        <FormField label="Date">
+                            <DateInput
+                                {...register("date")}
+                                defaultValue={new Date().toISOString().split('T')[0]}
+                            />
+                            {errors.date && <span className="text-red-500 text-sm">{errors.date.message}</span>}
                         </FormField>
                     </div>
                     

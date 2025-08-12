@@ -1,6 +1,7 @@
 import DisplayField from "@/components/forms/DisplayField";
 import FormField from "@/components/forms/FormField";
 import Input from "@/components/forms/Input";
+import DateInput from "@/components/forms/DateInput";
 import Select from "@/components/forms/Select";
 import Button from "@/components/ui/Button";
 import ButtonGroup from "@/components/ui/ButtonGroup";
@@ -26,14 +27,21 @@ const EditRecordForm = ({ record, onSubmit, onCancel, accountList, isMobile = fa
         defaultValues: {
             accountId: record.accountId,
             type: record.type,
-            description: record.description ?? ''
+            description: record.description ?? '',
+            date: record.date ? new Date(record.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]
         }
     });
     
     const { register, handleSubmit, formState: { errors, isSubmitting } } = form;
     
     const onFormSubmit = (data: EditRecordData) => {
-        onSubmit({ ...data, id: record.id });
+        // Convert amount back to øre (date is already handled by schema)
+        const processedData = {
+            ...data,
+            amount: Math.round(data.amount * 100),
+            id: record.id
+        };
+        onSubmit(processedData);
         onCancel(); // Close the form after successful submit
     };
 
@@ -77,6 +85,14 @@ const EditRecordForm = ({ record, onSubmit, onCancel, accountList, isMobile = fa
                                 <span className="absolute right-3 top-2 text-sm text-gray-500">kr</span>
                             </div>
                             {errors.amount && <span className="text-red-500 text-sm">{errors.amount.message}</span>}
+                        </FormField>
+
+                        <FormField label="Date">
+                            <DateInput
+                                {...register("date")}
+                                defaultValue={record.date ? new Date(record.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]}
+                            />
+                            {errors.date && <span className="text-red-500 text-sm">{errors.date.message}</span>}
                         </FormField>
                     </div>
                     

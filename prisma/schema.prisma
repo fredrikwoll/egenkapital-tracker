@@ -51,6 +51,7 @@ model AccountRecord {
   type      RecordType @default(DEPOSIT)
   amount    Int      // Amount in øre (1 kr = 100 øre)
   description String?
+  date      DateTime @default(now()) // Date when the transaction occurred
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   
@@ -58,6 +59,7 @@ model AccountRecord {
   
   @@index([accountId])
   @@index([createdAt])
+  @@index([date])
 }
 
 model Debt {
