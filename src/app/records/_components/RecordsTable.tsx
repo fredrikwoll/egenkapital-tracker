@@ -11,7 +11,7 @@ import CreateRecordForm from "./CreateRecordForm";
 import EditRecordForm from "./EditRecordForm";
 import { CreateRecordData, EditRecordData } from "@/schemas/records";
 import { useRecordForms } from "../_hooks/useRecordsForm";
-import { formatAmount } from "@/lib/utils";
+import { useFormatAmount } from "@/contexts/SettingsContext";
 
 /* type AccountWithTotal = Account & {
     totalAmount: number
@@ -28,6 +28,8 @@ type RecordsTableType = {
 }
 
 const RecordsTable = ({ records, accountList, onSaveAdd, onSaveEdit, onDelete }: RecordsTableType) => {
+    const formatAmount = useFormatAmount();
+    
     const {
         showAddForm, createForm, handlers, expandedId
     } = useRecordForms({ onSaveAdd, onSaveEdit });
@@ -53,7 +55,7 @@ const RecordsTable = ({ records, accountList, onSaveAdd, onSaveEdit, onDelete }:
         {
             key: 'amount',
             className: 'flex-1',
-            transform: (value: unknown) => `${formatAmount(value as number)}`
+            transform: (value: unknown) => formatAmount(value as number)
         }
     ];
 

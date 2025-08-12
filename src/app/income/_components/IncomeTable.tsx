@@ -10,12 +10,13 @@ import { Income, IncomeFrequency } from "@prisma/client";
 import { useIncomeForms } from "../_hooks/useIncomeForms";
 import CreateIncomeForm from "./CreateIncomeForm";
 import EditIncomeForm from "./EditIncomeForm";
+import { useFormatAmount } from "@/contexts/SettingsContext";
 
 
 
 
-// Define your columns configuration
-const columns: Column<Income>[] = [
+// Define your columns configuration (will be created dynamically to use formatAmount hook)
+const createColumns = (formatAmount: (amount: number) => string): Column<Income>[] => [
     {
         key: 'name',
         className: 'flex-1'
@@ -28,7 +29,7 @@ const columns: Column<Income>[] = [
     {
         key: 'amount',
         className: 'flex-1',
-        transform: (value: unknown) => `${(value as number / 100).toFixed(2)} kr`
+        transform: (value: unknown) => formatAmount(value as number)
     }
 ];
 
@@ -40,6 +41,8 @@ type IncomeTableType = {
 }
 
 const IncomeTable = ({ income, onSaveAdd, onSaveEdit, onDelete }: IncomeTableType) => {
+    const formatAmount = useFormatAmount();
+    const columns = createColumns(formatAmount);
     
     const {
         showAddForm, createForm, handlers, expandedId

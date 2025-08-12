@@ -10,13 +10,14 @@ import CreateAccountForm from "./CreateAccountForm";
 import { useAccountForms } from "../_hooks/useAccountsForm";
 import EditAccountForm from "./EditAccountForm";
 import { CreateAccountData, EditAccountData } from "@/schemas/account";
+import { useFormatAmount } from "@/contexts/SettingsContext";
 
 type AccountWithTotal = Account & {
     totalAmount: number
 }
 
-// Define your columns configuration
-const columns: Column<AccountWithTotal>[] = [
+// Define your columns configuration (will be created dynamically to use formatAmount hook)
+const createColumns = (formatAmount: (amount: number) => string): Column<AccountWithTotal>[] => [
     {
         key: 'name',
         className: 'flex-1'
@@ -29,7 +30,7 @@ const columns: Column<AccountWithTotal>[] = [
     {
         key: 'totalAmount',
         className: 'flex-1',
-        transform: (value: unknown) => `${(value as number / 100).toFixed(2)} kr`
+        transform: (value: unknown) => formatAmount(value as number)
     }
 ];
 
@@ -41,6 +42,8 @@ type AccountsTableType = {
 }
 
 const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTableType) => {
+    const formatAmount = useFormatAmount();
+    const columns = createColumns(formatAmount);
     
     const {
         showAddForm, createForm, handlers, expandedId

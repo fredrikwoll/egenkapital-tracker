@@ -10,10 +10,11 @@ import { Debt, DebtType } from "@prisma/client";
 import CreateDebtForm from "./CreateDebtForm";
 import EditDebtForm from "./EditDebtForm";
 import { useDebtForms } from "../_hooks/useDebtForms";
+import { useFormatAmount } from "@/contexts/SettingsContext";
 
 
-// Define your columns configuration
-const columns: Column<Debt>[] = [
+// Define your columns configuration (will be created dynamically to use formatAmount hook)
+const createColumns = (formatAmount: (amount: number) => string): Column<Debt>[] => [
     {
         key: 'name',
         className: 'flex-1'
@@ -26,7 +27,7 @@ const columns: Column<Debt>[] = [
     {
         key: 'amount',
         className: 'flex-1',
-        transform: (value: unknown) => `${(value as number / 100).toFixed(2)} kr`
+        transform: (value: unknown) => formatAmount(value as number)
     }
 ];
 
@@ -38,6 +39,8 @@ type DebtTableType = {
 }
 
 const DebtTable = ({ debts, onSaveAdd, onSaveEdit, onDelete }: DebtTableType) => {
+    const formatAmount = useFormatAmount();
+    const columns = createColumns(formatAmount);
     
     const {
         showAddForm, createForm, handlers, expandedId

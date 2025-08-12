@@ -2,14 +2,24 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { ConfirmationProvider } from "@/contexts/ConfirmationContext";
+import { SettingsProvider } from "@/contexts/SettingsContext";
+import { Settings } from "@prisma/client";
 
 const queryClient = new QueryClient();
-export default function Providers({ children }: { children: React.ReactNode }) {
+
+type ProvidersProps = {
+    children: React.ReactNode;
+    initialSettings?: Settings;
+};
+
+export default function Providers({ children, initialSettings }: ProvidersProps) {
     return (
         <QueryClientProvider client={queryClient}>
-            <ConfirmationProvider>
-                {children}
-            </ConfirmationProvider>
+            <SettingsProvider initialSettings={initialSettings}>
+                <ConfirmationProvider>
+                    {children}
+                </ConfirmationProvider>
+            </SettingsProvider>
             <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
     );

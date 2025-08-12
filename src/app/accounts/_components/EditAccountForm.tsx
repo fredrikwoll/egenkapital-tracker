@@ -9,6 +9,7 @@ import { EditAccountData, editAccountSchema } from "@/schemas/account";
 import { Account } from "@prisma/client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useFormatAmount } from "@/contexts/SettingsContext";
 
 type AccountWithTotal = Account & {
     totalAmount: number
@@ -22,6 +23,8 @@ type EditAccountFormProps = {
 }
 
 const EditAccountForm = ({ account, onSubmit, onCancel, isMobile = false }: EditAccountFormProps) => {
+    const formatAmount = useFormatAmount();
+    
     // Create fresh form instance with account data as defaultValues
     const form = useForm<EditAccountData>({
         resolver: zodResolver(editAccountSchema),
@@ -67,8 +70,8 @@ const EditAccountForm = ({ account, onSubmit, onCancel, isMobile = false }: Edit
                         </FormField>
                         <DisplayField
                             label="Total Amount"
-                            value={account.totalAmount}
-                            suffix="kr"
+                            value={formatAmount(account.totalAmount)}
+                            suffix=""
                         />
                     </div>
                     <ButtonGroup direction={isMobile ? "column" : "row"}>
