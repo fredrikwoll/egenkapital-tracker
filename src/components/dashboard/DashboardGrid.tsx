@@ -4,50 +4,65 @@ import MonthlyGrowthCard from "./MonthlyGrowthCard";
 import AssetAllocationChart from "./AssetAllocationChart";
 import CapitalProgressChart from "./CapitalProgressChart";
 import GoalProgressCard from "./GoalProgressCard";
+import { useDashboard } from "../../app/dashboard/_hooks/useDashboard";
 
 export default function DashboardGrid() {
-  // Mock data for now - we'll replace with real data later
-  const mockData = {
-    monthlyGrowth: 10000, // 10,000 kr
-    totalCapital: 650000, // 650,000 kr
-    capitalGoal: 1000000, // 1,000,000 kr
-    remaining: 350000, // 350,000 kr
-    assetAllocation: [
-      { name: 'Egenkapital', value: 50, color: '#10B981' }, // Green
-      { name: 'Aksjefond', value: 15, color: '#3B82F6' }, // Blue
-      { name: 'Gjeld', value: 35, color: '#EF4444' } // Red
-    ],
-    capitalHistory: [
-      { week: 'Uke 23', value: 500000, change: 0 },
-      { week: 'Uke 24', value: 520000, change: 4 },
-      { week: 'Uke 25', value: 540000, change: 8 },
-      { week: 'Uke 26', value: 580000, change: 16 },
-      { week: 'Uke 27', value: 600000, change: 20 },
-      { week: 'Uke 28', value: 650000, change: 30 },
-      { week: 'Uke 29', value: 620000, change: 24 },
-      { week: 'Uke 30', value: 590000, change: 18 },
-      { week: 'Uke 31', value: 610000, change: 22 },
-      { week: 'Uke 32', value: 650000, change: 30 }
-    ]
-  };
+  const { data, loading, error } = useDashboard();
+
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="bg-card p-6 rounded-lg shadow-sm border border-border animate-pulse">
+            <div className="h-6 bg-border rounded mb-4"></div>
+            <div className="h-32 bg-border rounded"></div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-card p-6 rounded-lg shadow-sm border border-border">
+        <div className="text-center">
+          <div className="text-negative mb-2">⚠️ Error loading dashboard</div>
+          <p className="text-text-muted text-sm">{error}</p>
+          <p className="text-text-muted text-xs mt-2">
+            Make sure you have created some account records to display data.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div className="bg-card p-6 rounded-lg shadow-sm border border-border">
+        <div className="text-center text-text-muted">
+          No dashboard data available
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Top Left - Monthly Growth */}
-      <MonthlyGrowthCard monthlyGrowth={mockData.monthlyGrowth} />
+      <MonthlyGrowthCard monthlyGrowth={data.monthlyGrowth} />
       
       {/* Top Right - Asset Allocation Pie Chart */}
-      <AssetAllocationChart data={mockData.assetAllocation} />
+      <AssetAllocationChart data={data.assetAllocation} />
       
-      {/* Bottom Left - Capital Progress Line Chart */}
-      <CapitalProgressChart data={mockData.capitalHistory} />
+      {/* Bottom Left - Capital Progress Chart */}
+      <CapitalProgressChart data={data.capitalHistory} />
       
       {/* Bottom Right - Goal Progress */}
       <GoalProgressCard 
-        goal={mockData.capitalGoal}
-        remaining={mockData.remaining}
-        current={mockData.totalCapital}
-        progressPercentage={73}
+        goal={data.capitalGoal}
+        remaining={data.remaining}
+        current={data.totalCapital}
+        progressPercentage={data.progressPercentage}
       />
     </div>
   );

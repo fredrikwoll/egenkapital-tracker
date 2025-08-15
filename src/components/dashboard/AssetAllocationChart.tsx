@@ -61,9 +61,9 @@ export default function AssetAllocationChart({ data }: AssetAllocationChartProps
                 <Cell 
                   key={`cell-${index}`} 
                   fill={entry.color}
-                  fillOpacity={0.8}
-                  stroke="var(--color-border)"
-                  strokeWidth={2}
+                  fillOpacity={0.4}
+                  stroke={entry.color}
+                  strokeWidth={3}
                 />
               ))}
             </Pie>
