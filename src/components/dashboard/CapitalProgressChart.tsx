@@ -1,6 +1,6 @@
 "use client";
 
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useSettings } from "@/contexts/SettingsContext";
 import { formatAmountWithSettings } from "@/lib/utils";
 
@@ -30,16 +30,16 @@ export default function CapitalProgressChart({ data }: CapitalProgressChartProps
     if (active && payload && payload.length) {
       const data = payload[0];
       return (
-        <div className="bg-border p-3 border border-gray-200 rounded-lg shadow-sm">
-          <p className="text-sm font-medium">{label}</p>
-          <p className="text-sm text-gray-600">
+        <div className="bg-card p-3 border border-border rounded-lg shadow-sm">
+          <p className="text-sm font-medium text-text-primary">{label}</p>
+          <p className="text-sm text-text-secondary">
             {formatAmountWithSettings(data.value * 100, settings || {
               currency: 'NOK',
               numberFormat: '1,234.56',
               currencyDisplay: 'symbol-after'
             })}
           </p>
-          <p className="text-sm text-green-600">
+          <p className="text-sm text-positive">
             +{data.payload.change}%
           </p>
         </div>
@@ -57,34 +57,34 @@ export default function CapitalProgressChart({ data }: CapitalProgressChartProps
   };
 
   return (
-    <div className="bg-border p-6 rounded-lg shadow-sm border border-gray-200">
+    <div className="bg-card p-6 rounded-lg shadow-sm border border-border">
       <h3 className="text-lg font-semibold text-text-primary mb-4">Capital Progress</h3>
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data}>
+          <AreaChart data={data}>
             <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
             <XAxis 
               dataKey="week" 
               axisLine={false}
               tickLine={false}
-              className="text-xs text-gray-600"
+              className="text-xs text-text-muted"
             />
             <YAxis 
               tickFormatter={formatYAxisTick}
               axisLine={false}
               tickLine={false}
-              className="text-xs text-gray-600"
+              className="text-xs text-text-muted"
             />
             <Tooltip content={<CustomTooltip />} />
-            <Line 
+            <Area 
               type="monotone" 
               dataKey="value" 
-              stroke="#10B981" 
+              stroke="var(--color-positive)" 
               strokeWidth={3}
-              dot={{ fill: '#10B981', strokeWidth: 2, r: 4 }}
-              activeDot={{ r: 6, stroke: '#10B981', strokeWidth: 2 }}
+              fill="var(--color-positive)"
+              fillOpacity={0.3}
             />
-          </LineChart>
+          </AreaChart>
         </ResponsiveContainer>
       </div>
     </div>
