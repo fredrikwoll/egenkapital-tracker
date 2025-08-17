@@ -32,6 +32,7 @@ export const useDebtForms = ({ onSaveAdd, onSaveEdit }: UseDebtFormsProps) => {
         onSaveAdd(dataWithOre);
         setShowAddForm(false);
         setExpandedId(null);
+        createForm.reset();
     }
 
 

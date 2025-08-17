@@ -30,6 +30,7 @@ export const useAccountForms = ({ onSaveAdd, onSaveEdit }: UseAccountFormsProps)
         onSaveAdd(data);
         setShowAddForm(false);
         setExpandedId(null);
+        createForm.reset();
     }
 
 

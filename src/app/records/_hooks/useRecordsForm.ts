@@ -30,6 +30,7 @@ export const useRecordForms = ({ onSaveAdd, onSaveEdit }: UseRecordFormsProps) =
         onSaveAdd(data);
         setShowAddForm(false);
         setExpandedId(null);
+        createForm.reset();
     }
 
 

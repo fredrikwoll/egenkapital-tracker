@@ -32,6 +32,7 @@ export const useIncomeForms = ({ onSaveAdd, onSaveEdit }: UseIncomeFormsProps) =
         onSaveAdd(dataWithOre);
         setShowAddForm(false);
         setExpandedId(null);
+        createForm.reset();
     }
 
 
