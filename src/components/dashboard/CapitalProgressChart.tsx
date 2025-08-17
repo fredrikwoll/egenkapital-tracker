@@ -39,8 +39,12 @@ export default function CapitalProgressChart({ data }: CapitalProgressChartProps
               currencyDisplay: 'symbol-after'
             })}
           </p>
-          <p className={`text-sm ${data.payload.change >= 0 ? 'text-positive' : 'text-negative'}`}>
-            {data.payload.change >= 0 ? '+' : ''}{data.payload.change.toFixed(1)}%
+          <p className={`text-sm ${
+            data.payload.change > 0 ? 'text-positive' : 
+            data.payload.change < 0 ? 'text-negative' : 
+            'text-text-muted'
+          }`}>
+            {data.payload.change > 0 ? '+' : ''}{data.payload.change.toFixed(1)}%
           </p>
         </div>
       );

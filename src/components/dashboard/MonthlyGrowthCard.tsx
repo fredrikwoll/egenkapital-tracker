@@ -10,20 +10,26 @@ interface MonthlyGrowthCardProps {
 export default function MonthlyGrowthCard({ monthlyGrowth }: MonthlyGrowthCardProps) {
   const { settings } = useSettings();
 
-  const isPositive = monthlyGrowth >= 0;
+  const isPositive = monthlyGrowth > 0;
+  const isNegative = monthlyGrowth < 0;
+  const isNeutral = monthlyGrowth === 0;
 
   return (
     <div className="bg-card p-8 rounded-lg shadow-sm border border-border relative overflow-hidden">
       {/* Background decoration */}
-      <div className={`absolute top-0 right-0 w-32 h-32 ${isPositive ? 'bg-positive/10' : 'bg-negative/10'} rounded-full -translate-y-16 translate-x-16`}></div>
+      <div className={`absolute top-0 right-0 w-32 h-32 ${isPositive ? 'bg-positive/10' : isNeutral ? 'bg-border/20' : 'bg-negative/10'} rounded-full -translate-y-16 translate-x-16`}></div>
       
       <div className="relative">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
-            <div className={`h-16 w-16 ${isPositive ? 'bg-positive/20' : 'bg-negative/20'} rounded-xl flex items-center justify-center`}>
+            <div className={`h-16 w-16 ${isPositive ? 'bg-positive/20' : isNeutral ? 'bg-border/20' : 'bg-negative/20'} rounded-xl flex items-center justify-center`}>
               {isPositive ? (
                 <svg className="h-8 w-8 text-positive" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+              ) : isNeutral ? (
+                <svg className="h-8 w-8 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
                 </svg>
               ) : (
                 <svg className="h-8 w-8 text-negative" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -36,13 +42,13 @@ export default function MonthlyGrowthCard({ monthlyGrowth }: MonthlyGrowthCardPr
               <p className="text-sm text-text-muted">This month&apos;s performance</p>
             </div>
           </div>
-          <div className={`px-3 py-1 rounded-full text-xs font-medium ${isPositive ? 'bg-positive/20 text-positive' : 'bg-negative/20 text-negative'}`}>
-            {isPositive ? 'POSITIVE' : 'NEGATIVE'}
+          <div className={`px-3 py-1 rounded-full text-xs font-medium ${isPositive ? 'bg-positive/20 text-positive' : isNeutral ? 'bg-border/20 text-text-muted' : 'bg-negative/20 text-negative'}`}>
+            {isPositive ? 'POSITIVE' : isNeutral ? 'NEUTRAL' : 'NEGATIVE'}
           </div>
         </div>
         
         <div className="text-center py-6">
-          <p className={`text-6xl font-bold ${isPositive ? 'text-positive' : 'text-negative'} mb-2 tracking-tight`}>
+          <p className={`text-6xl font-bold ${isPositive ? 'text-positive' : isNeutral ? 'text-text-muted' : 'text-negative'} mb-2 tracking-tight`}>
             {isPositive ? '+' : ''}{formatAmountWithSettings(monthlyGrowth * 100, settings || {
               currency: 'NOK',
               numberFormat: '1,234.56',
@@ -65,7 +71,7 @@ export default function MonthlyGrowthCard({ monthlyGrowth }: MonthlyGrowthCardPr
               </svg>
               <span className="text-xs text-text-muted font-medium">WEEKLY AVG</span>
             </div>
-            <p className={`text-lg font-bold ${isPositive ? 'text-positive' : 'text-negative'}`}>
+            <p className={`text-lg font-bold ${isPositive ? 'text-positive' : isNeutral ? 'text-text-muted' : 'text-negative'}`}>
               {formatAmountWithSettings((monthlyGrowth / 4) * 100, settings || {
                 currency: 'NOK',
                 numberFormat: '1,234.56',
@@ -80,7 +86,7 @@ export default function MonthlyGrowthCard({ monthlyGrowth }: MonthlyGrowthCardPr
               </svg>
               <span className="text-xs text-text-muted font-medium">DAILY AVG</span>
             </div>
-            <p className={`text-lg font-bold ${isPositive ? 'text-positive' : 'text-negative'}`}>
+            <p className={`text-lg font-bold ${isPositive ? 'text-positive' : isNeutral ? 'text-text-muted' : 'text-negative'}`}>
               {formatAmountWithSettings((monthlyGrowth / 30) * 100, settings || {
                 currency: 'NOK',
                 numberFormat: '1,234.56',
