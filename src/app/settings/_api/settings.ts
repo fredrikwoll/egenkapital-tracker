@@ -12,7 +12,7 @@ export async function fetchSettings() {
 }
 
 
-export async function updateSettings(data: { id: string, currency: string, dateFormat: string, numberFormat: string, currencyDisplay: string}) {
+export async function updateSettings(data: { id: string, currency: string, dateFormat: string, numberFormat: string, currencyDisplay: string, capitalGoal: number}) {
   const response = await fetch(`${baseUrl}/api/settings`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -20,7 +20,8 @@ export async function updateSettings(data: { id: string, currency: string, dateF
       currency: data.currency,
       dateFormat: data.dateFormat,
       numberFormat: data.numberFormat,
-      currencyDisplay: data.currencyDisplay
+      currencyDisplay: data.currencyDisplay,
+      capitalGoal: data.capitalGoal
     }),
   });
 

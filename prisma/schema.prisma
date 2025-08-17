@@ -86,6 +86,7 @@ model Settings {
   dateFormat    String   @default("DD/MM/YYYY")
   numberFormat  String   @default("1 234,56")
   currencyDisplay String @default("symbol")
+  capitalGoal   Int      @default(100000000) // Default 1,000,000 kr in øre
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }

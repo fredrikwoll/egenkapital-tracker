@@ -11,7 +11,8 @@ async function getData() {
                 currency: "NOK",
                 dateFormat: "DD/MM/YYYY",
                 numberFormat: "1 234,56",
-                currencyDisplay: "symbol"
+                currencyDisplay: "symbol",
+                capitalGoal: 100000000 // 1,000,000 kr in øre
             }
         });
     }

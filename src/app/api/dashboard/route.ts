@@ -128,8 +128,9 @@ export async function GET() {
       }
     ];
 
-    // Goal calculation (example: 1,000,000 kr goal)
-    const capitalGoal = 100000000; // 1,000,000 kr in øre
+    // Get capital goal from settings
+    const settings = await prisma.settings.findFirst();
+    const capitalGoal = settings?.capitalGoal || 100000000; // Default to 1,000,000 kr in øre if no settings
     const remaining = Math.max(0, capitalGoal - totalCapital);
     const progressPercentage = Math.min(100, Math.round((totalCapital / capitalGoal) * 100));
 

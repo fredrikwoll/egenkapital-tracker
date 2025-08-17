@@ -4,7 +4,8 @@ const baseSettingSchema = z.object({
     currency: z.string().min(1, "Currency is required"),
     dateFormat: z.string().min(1, "Date Format is required"),
     numberFormat: z.string().min(1, "Number Format is required"),
-    currencyDisplay: z.string().min(1, "Currency Display is required")
+    currencyDisplay: z.string().min(1, "Currency Display is required"),
+    capitalGoal: z.number().min(0, "Capital goal must be positive")
 });
 
 export const createSettingSchema = baseSettingSchema;

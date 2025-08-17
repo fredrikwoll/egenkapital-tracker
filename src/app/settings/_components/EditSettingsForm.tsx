@@ -1,4 +1,5 @@
 import FormField from "@/components/forms/FormField";
+import Input from "@/components/forms/Input";
 import Select from "@/components/forms/Select";
 import Button from "@/components/ui/Button";
 import ButtonGroup from "@/components/ui/ButtonGroup";
@@ -55,7 +56,8 @@ const EditSettingsForm = ({ settings, onSubmit, onCancel, isMobile = false }: Ed
             currency: settings.currency,
             dateFormat: settings.dateFormat,
             numberFormat: settings.numberFormat,
-            currencyDisplay: settings.currencyDisplay
+            currencyDisplay: settings.currencyDisplay,
+            capitalGoal: settings.capitalGoal / 100 // Convert øre to kroner for display
         }
     });
 
@@ -69,9 +71,9 @@ const EditSettingsForm = ({ settings, onSubmit, onCancel, isMobile = false }: Ed
     return (
         <div className={`bg-card border-t border-gray-100 ${isMobile ? 'px-4 py-4' : 'px-6 py-4'} animate-in slide-in-from-top-2 duration-200`}>
             <div className="px-4 md:px-6 py-4">
-                <SectionHeader title="Formating and currency" size="h4" />
+                <SectionHeader title="Formatting and Currency" variant="settings" size="h4" />
                 <form onSubmit={handleSubmit(onFormSubmit)} className="max-w-2xl">
-                    <div className={isMobile ? 'space-y-4' : 'grid grid-cols-1 md:grid-cols-3 gap-4'}>
+                    <div className={isMobile ? 'space-y-4' : 'grid grid-cols-1 md:grid-cols-2 gap-4'}>
                         <FormField label='Currency'>
                             <Select
                                 {...register("currency")}
@@ -103,6 +105,26 @@ const EditSettingsForm = ({ settings, onSubmit, onCancel, isMobile = false }: Ed
                             />
                             {errors.currencyDisplay && <span className="text-red-500 text-sm">{errors.currencyDisplay.message}</span>}
                         </FormField>
+                    </div>
+                    
+                    <div className="mt-8">
+                        <SectionHeader title="Financial Goals" variant="goals" size="h4" />
+                        <div className={isMobile ? 'space-y-4' : 'grid grid-cols-1 md:grid-cols-2 gap-4'}>
+                            <FormField label='Capital Goal'>
+                                <div className="relative">
+                                    <Input
+                                        {...register("capitalGoal", {
+                                            setValueAs: (value) => parseFloat(value) || 0
+                                        })}
+                                        type="number"
+                                        placeholder="1000000"
+                                        step="0.01"
+                                    />
+                                    <span className="absolute right-3 top-2 text-sm text-gray-500">kr</span>
+                                </div>
+                                {errors.capitalGoal && <span className="text-red-500 text-sm">{errors.capitalGoal.message}</span>}
+                            </FormField>
+                        </div>
                     </div>
                     <ButtonGroup direction={isMobile ? "column" : "row"}>
                         <Button name="Save Settings" shortName="Save" variant="primary" type="submit" isDisabled={isSubmitting} />

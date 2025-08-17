@@ -8,6 +8,7 @@ const SettingsSchema = z.object({
     dateFormat: z.string().optional(),
     numberFormat: z.string().optional(),
     currencyDisplay: z.string().optional(),
+    capitalGoal: z.number().optional(),
 });
 
 type SettingsValidate = z.infer<typeof SettingsSchema>;
@@ -24,7 +25,8 @@ export async function GET() {
                     currency: "NOK",
                     dateFormat: "DD/MM/YYYY",
                     numberFormat: "1 234,56",
-                    currencyDisplay: "symbol"
+                    currencyDisplay: "symbol",
+                    capitalGoal: 100000000
                 }
             });
         }
@@ -69,7 +71,8 @@ export async function POST(request: NextRequest) {
                     currency: validatedData.currency || "NOK",
                     dateFormat: validatedData.dateFormat || "DD/MM/YYYY",
                     numberFormat: validatedData.numberFormat || "1 234,56",
-                    currencyDisplay: validatedData.currencyDisplay || "symbol"
+                    currencyDisplay: validatedData.currencyDisplay || "symbol",
+                    capitalGoal: validatedData.capitalGoal || 100000000
                 }
             });
         }
