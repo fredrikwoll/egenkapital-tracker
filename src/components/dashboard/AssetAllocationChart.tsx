@@ -1,6 +1,6 @@
 "use client";
 
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, LabelList } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 
 interface AssetData {
   name: string;
@@ -35,7 +35,14 @@ export default function AssetAllocationChart({ data }: AssetAllocationChartProps
     return null;
   };
 
-  const renderLabel = (entry: any) => {
+  interface PieLabelData {
+    value: number;
+    name: string;
+    color: string;
+    index: number;
+  }
+
+  const renderLabel = (entry: PieLabelData) => {
     return `${entry.value}%`;
   };
 

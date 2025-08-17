@@ -43,7 +43,7 @@ export async function GET() {
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
     
     const recentRecords = accountRecords.filter(record => {
-      const recordDate = 'date' in record ? new Date(record.date as Date) : new Date(record.createdAt);
+      const recordDate = new Date(record.date);
       return recordDate >= thirtyDaysAgo;
     });
     const monthlyGrowth = recentRecords.reduce((sum, record) => {
@@ -58,6 +58,7 @@ export async function GET() {
     // Calculate weekly capital changes for the last 10 weeks
     const capitalHistory: Array<{week: string, value: number, change: number}> = [];
     const currentDate = new Date();
+    let runningTotal = 0;
     
     for (let i = 9; i >= 0; i--) {
       const weekStartDate = new Date(currentDate);
@@ -67,7 +68,7 @@ export async function GET() {
       
       // Get records for this specific week only
       const weekRecords = accountRecords.filter(record => {
-        const recordDate = 'date' in record ? new Date(record.date as Date) : new Date(record.createdAt);
+        const recordDate = new Date(record.date);
         return recordDate >= weekStartDate && recordDate <= weekEndDate;
       });
       
@@ -81,12 +82,24 @@ export async function GET() {
         return sum;
       }, 0);
 
+      // Calculate running total up to this week
+      runningTotal += weeklyChange;
+      
+      // Calculate percentage change from previous week
+      const previousTotal = runningTotal - weeklyChange;
+      let percentageChange = 0;
+      if (previousTotal !== 0) {
+        percentageChange = (weeklyChange / Math.abs(previousTotal)) * 100;
+      } else if (weeklyChange !== 0) {
+        percentageChange = 100; // If starting from 0, consider it 100% change
+      }
+
       const weekNumber = Math.ceil((weekEndDate.getTime() - new Date(weekEndDate.getFullYear(), 0, 1).getTime()) / (7 * 24 * 60 * 60 * 1000));
       
       capitalHistory.push({
         week: `Uke ${weekNumber}`,
-        value: weeklyChange / 100, // Convert øre to kr - this is now the weekly change
-        change: 0 // Not needed for weekly changes
+        value: runningTotal / 100, // Convert øre to kr - cumulative total
+        change: percentageChange // Actual percentage change
       });
     }
 
