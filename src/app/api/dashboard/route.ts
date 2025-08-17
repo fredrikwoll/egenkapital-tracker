@@ -47,6 +47,11 @@ export async function GET() {
       return recordDate >= thirtyDaysAgo;
     });
     const monthlyGrowth = recentRecords.reduce((sum, record) => {
+      // Exclude initial amount deposits from growth calculation
+      if (record.description === 'Initial amount') {
+        return sum;
+      }
+      
       if (record.type === 'DEPOSIT' || record.type === 'INTEREST') {
         return sum + record.amount;
       } else if (record.type === 'WITHDRAWAL' || record.type === 'TRANSFER') {
@@ -74,6 +79,11 @@ export async function GET() {
       
       // Calculate net change for this week
       const weeklyChange = weekRecords.reduce((sum, record) => {
+        // Exclude initial amount deposits from growth calculation
+        if (record.description === 'Initial amount') {
+          return sum;
+        }
+        
         if (record.type === 'DEPOSIT' || record.type === 'INTEREST') {
           return sum + record.amount;
         } else if (record.type === 'WITHDRAWAL' || record.type === 'TRANSFER') {
