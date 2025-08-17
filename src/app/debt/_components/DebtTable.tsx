@@ -47,9 +47,6 @@ const DebtTable = ({ debts, onSaveAdd, onSaveEdit, onDelete }: DebtTableType) =>
     } = useDebtForms({ onSaveAdd, onSaveEdit });
 
 
-    if (!debts?.length) {
-        return <div>No debts to display</div>;
-    }
 
     return (
         <> {/* Header */}

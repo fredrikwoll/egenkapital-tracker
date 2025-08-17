@@ -66,9 +66,6 @@ const RecordsTable = ({ records, accountList, onSaveAdd, onSaveEdit, onDelete }:
     ];
 
 
-    if (!records?.length) {
-        return <div>No records to display</div>;
-    }
 
 
 

@@ -50,9 +50,6 @@ const AccountsTable = ({ accounts, onSaveAdd, onSaveEdit, onDelete }: AccountsTa
     } = useAccountForms({ onSaveAdd, onSaveEdit });
 
 
-    if (!accounts?.length) {
-        return <div>No accounts to display</div>;
-    }
 
     return (
         <> {/* Header */}

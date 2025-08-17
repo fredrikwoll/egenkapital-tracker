@@ -49,9 +49,6 @@ const IncomeTable = ({ income, onSaveAdd, onSaveEdit, onDelete }: IncomeTableTyp
     } = useIncomeForms({ onSaveAdd, onSaveEdit });
 
 
-    if (!income?.length) {
-        return <div>No income to display</div>;
-    }
 
     return (
         <> {/* Header */}
