@@ -23,9 +23,9 @@ I need a better way to track how much money I have for a down payment on a prope
 - [x] Records/history per account
 - [x] Debt overview
 - [x] Income management
-- [x] Settings management (currency, date/number formats)
+- [x] Settings management (currency, date/number formats, capital goals)
 - [ ] Loan simulator
-- [ ] Dashboard with overview
+- [x] Dashboard with overview
 
 ### Loan calculation (Norway)
 - [ ] 5x annual income rule
@@ -52,9 +52,9 @@ I need a better way to track how much money I have for a down payment on a prope
 - [x] Basic form component
 
 ### Fase 4: Dashboard
-- [ ] Overview of equity capital
+- [x] Overview of equity capital
 - [x] Debt and income overview
-- [ ] Basic stats
+- [x] Basic stats
 
 ### Fase 5: Onboarding
 - [ ] First time setup flow
@@ -67,9 +67,9 @@ I need a better way to track how much money I have for a down payment on a prope
 - [ ] Result display
 
 ### Phase 7: History and Statistics
-- [ ] Trend View
-- [ ] Period Comparison
-- [ ] Graphs and Visualization
+- [x] Trend View
+- [x] Period Comparison
+- [x] Graphs and Visualization
 
 ## Database Design
 ### Tables
@@ -113,9 +113,11 @@ I need a better way to track how much money I have for a down payment on a prope
 - [x] `GET /api/settings` - Get settings
 - [x] `PATCH /api/settings` - Update settings
 
+### Dashboard
+- [x] `GET /api/dashboard` - Dashboard data with stats, charts, and net worth calculations
+
 ### Calculations
 - [ ] `POST /api/calculate/loan-capacity` - Loan capacity
-- [ ] `GET /api/calculate/net-worth` - Total equity
 
 ## Setup/Installation
 ### Prerequisites
