@@ -1,9 +1,17 @@
 @import "tailwindcss";
 
+/* Custom animations */
+@keyframes shimmer {
+  0% { transform: translateX(-100%) skewX(-12deg); }
+  100% { transform: translateX(200%) skewX(-12deg); }
+}
+
 @theme {
   --color-main: #0F172A;
   --color-card: #1E293B;
   --color-border: #334155;
+  
+  --animate-shimmer: shimmer 2s ease-in-out infinite;
   
   /* Flat naming for nested colors */
   --color-text-primary: #F1F5F9;

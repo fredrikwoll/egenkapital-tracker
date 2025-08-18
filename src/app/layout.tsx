@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Poppins } from 'next/font/google'
 import "./globals.css";
-import Layout from "@/components/layout/Layout";
+import ConditionalLayout from "@/components/ConditionalLayout";
 import Providers from "../../providers";
 import { getSettings } from "@/lib/getSettings";
+import { checkSetupStatus } from "@/lib/checkSetupStatus";
+import SetupRedirect from "@/components/SetupRedirect";
 
 const poppins = Poppins({ 
   subsets: ['latin'], 
@@ -22,14 +24,16 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const settings = await getSettings();
+  const setupStatus = await checkSetupStatus();
 
   return (
     <html lang="en">
       <body className={`${poppins.variable} antialiased bg-main`} >
         <Providers initialSettings={settings}>
-          <Layout>
+          <SetupRedirect needsSetup={setupStatus.needsSetup} />
+          <ConditionalLayout>
             {children}
-          </Layout>
+          </ConditionalLayout>
         </Providers>
       </body>
     </html>
