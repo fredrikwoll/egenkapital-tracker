@@ -57,9 +57,11 @@ I need a better way to track how much money I have for a down payment on a prope
 - [x] Basic stats
 
 ### Fase 5: Onboarding
-- [ ] First time setup flow
-- [ ] Create accounts
-- [ ] Set starting values
+- [x] First time setup flow
+- [x] Create accounts
+- [x] Create debts
+- [x] Create income
+- [x] Set starting values
 
 ### Fase 6: Loan simulator
 - [ ] Calculation logic
