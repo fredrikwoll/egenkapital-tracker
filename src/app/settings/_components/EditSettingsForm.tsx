@@ -57,7 +57,21 @@ const EditSettingsForm = ({ settings, onSubmit, onCancel, isMobile = false }: Ed
             dateFormat: settings.dateFormat,
             numberFormat: settings.numberFormat,
             currencyDisplay: settings.currencyDisplay,
-            capitalGoal: settings.capitalGoal / 100 // Convert øre to kroner for display
+            capitalGoal: settings.capitalGoal / 100, // Convert øre to kroner for display
+            
+            // SIFO living expenses (convert øre to kroner for display, with defaults)
+            sifoSingleAdult: 'sifoSingleAdult' in settings ? (settings.sifoSingleAdult as number) / 100 : 17000,
+            sifoCouple: 'sifoCouple' in settings ? (settings.sifoCouple as number) / 100 : 28000,
+            sifoChildUnder6: 'sifoChildUnder6' in settings ? (settings.sifoChildUnder6 as number) / 100 : 4000,
+            sifoChildOver6: 'sifoChildOver6' in settings ? (settings.sifoChildOver6 as number) / 100 : 6000,
+            
+            // Loan calculation parameters (convert basis points to percentages/ratios for display, with defaults)
+            maxDebtRatio: 'maxDebtRatioBp' in settings ? (settings.maxDebtRatioBp as number) / 100 : 5.0,
+            maxLtvRatio: 'maxLtvRatioBp' in settings ? (settings.maxLtvRatioBp as number) / 10000 : 0.85,
+            stressTestRate: 'stressTestRateBp' in settings ? (settings.stressTestRateBp as number) / 10000 : 0.05,
+            defaultLoanTerm: 'defaultLoanTerm' in settings ? (settings.defaultLoanTerm as number) : 25,
+            defaultInterestRate: 'defaultInterestRateBp' in settings ? (settings.defaultInterestRateBp as number) / 10000 : 0.04,
+            minDownPayment: 'minDownPaymentBp' in settings ? (settings.minDownPaymentBp as number) / 10000 : 0.10
         }
     });
 
@@ -123,6 +137,176 @@ const EditSettingsForm = ({ settings, onSubmit, onCancel, isMobile = false }: Ed
                                     <span className="absolute right-3 top-2 text-sm text-gray-500">kr</span>
                                 </div>
                                 {errors.capitalGoal && <span className="text-red-500 text-sm">{errors.capitalGoal.message}</span>}
+                            </FormField>
+                        </div>
+                    </div>
+                    
+                    <div className="mt-8">
+                        <SectionHeader title="SIFO Living Expenses" variant="settings" size="h4" />
+                        <div className={isMobile ? 'space-y-4' : 'grid grid-cols-1 md:grid-cols-2 gap-4'}>
+                            <FormField label='Single Adult (monthly)'>
+                                <div className="relative">
+                                    <Input
+                                        {...register("sifoSingleAdult", {
+                                            setValueAs: (value) => parseFloat(value) || 0
+                                        })}
+                                        type="number"
+                                        placeholder="17000"
+                                        step="100"
+                                    />
+                                    <span className="absolute right-3 top-2 text-sm text-gray-500">kr</span>
+                                </div>
+                                {errors.sifoSingleAdult && <span className="text-red-500 text-sm">{errors.sifoSingleAdult.message}</span>}
+                            </FormField>
+                            
+                            <FormField label='Couple (monthly)'>
+                                <div className="relative">
+                                    <Input
+                                        {...register("sifoCouple", {
+                                            setValueAs: (value) => parseFloat(value) || 0
+                                        })}
+                                        type="number"
+                                        placeholder="28000"
+                                        step="100"
+                                    />
+                                    <span className="absolute right-3 top-2 text-sm text-gray-500">kr</span>
+                                </div>
+                                {errors.sifoCouple && <span className="text-red-500 text-sm">{errors.sifoCouple.message}</span>}
+                            </FormField>
+                            
+                            <FormField label='Child Under 6 (monthly)'>
+                                <div className="relative">
+                                    <Input
+                                        {...register("sifoChildUnder6", {
+                                            setValueAs: (value) => parseFloat(value) || 0
+                                        })}
+                                        type="number"
+                                        placeholder="4000"
+                                        step="100"
+                                    />
+                                    <span className="absolute right-3 top-2 text-sm text-gray-500">kr</span>
+                                </div>
+                                {errors.sifoChildUnder6 && <span className="text-red-500 text-sm">{errors.sifoChildUnder6.message}</span>}
+                            </FormField>
+                            
+                            <FormField label='Child Over 6 (monthly)'>
+                                <div className="relative">
+                                    <Input
+                                        {...register("sifoChildOver6", {
+                                            setValueAs: (value) => parseFloat(value) || 0
+                                        })}
+                                        type="number"
+                                        placeholder="6000"
+                                        step="100"
+                                    />
+                                    <span className="absolute right-3 top-2 text-sm text-gray-500">kr</span>
+                                </div>
+                                {errors.sifoChildOver6 && <span className="text-red-500 text-sm">{errors.sifoChildOver6.message}</span>}
+                            </FormField>
+                        </div>
+                    </div>
+                    
+                    <div className="mt-8">
+                        <SectionHeader title="Loan Calculation Parameters" variant="settings" size="h4" />
+                        <div className={isMobile ? 'space-y-4' : 'grid grid-cols-1 md:grid-cols-2 gap-4'}>
+                            <FormField label='Max Debt Ratio'>
+                                <div className="relative">
+                                    <Input
+                                        {...register("maxDebtRatio", {
+                                            setValueAs: (value) => parseFloat(value) || 0
+                                        })}
+                                        type="number"
+                                        placeholder="5.0"
+                                        step="0.1"
+                                    />
+                                    <span className="absolute right-3 top-2 text-sm text-gray-500">×</span>
+                                </div>
+                                {errors.maxDebtRatio && <span className="text-red-500 text-sm">{errors.maxDebtRatio.message}</span>}
+                            </FormField>
+                            
+                            <FormField label='Max LTV Ratio'>
+                                <div className="relative">
+                                    <Input
+                                        {...register("maxLtvRatio", {
+                                            setValueAs: (value) => parseFloat(value) || 0
+                                        })}
+                                        type="number"
+                                        placeholder="0.85"
+                                        step="0.01"
+                                        min="0"
+                                        max="1"
+                                    />
+                                    <span className="absolute right-3 top-2 text-sm text-gray-500">%</span>
+                                </div>
+                                {errors.maxLtvRatio && <span className="text-red-500 text-sm">{errors.maxLtvRatio.message}</span>}
+                            </FormField>
+                            
+                            <FormField label='Stress Test Rate'>
+                                <div className="relative">
+                                    <Input
+                                        {...register("stressTestRate", {
+                                            setValueAs: (value) => parseFloat(value) || 0
+                                        })}
+                                        type="number"
+                                        placeholder="0.05"
+                                        step="0.001"
+                                        min="0"
+                                        max="0.2"
+                                    />
+                                    <span className="absolute right-3 top-2 text-sm text-gray-500">%</span>
+                                </div>
+                                {errors.stressTestRate && <span className="text-red-500 text-sm">{errors.stressTestRate.message}</span>}
+                            </FormField>
+                            
+                            <FormField label='Default Loan Term'>
+                                <div className="relative">
+                                    <Input
+                                        {...register("defaultLoanTerm", {
+                                            setValueAs: (value) => parseInt(value) || 0
+                                        })}
+                                        type="number"
+                                        placeholder="25"
+                                        step="1"
+                                        min="1"
+                                        max="50"
+                                    />
+                                    <span className="absolute right-3 top-2 text-sm text-gray-500">years</span>
+                                </div>
+                                {errors.defaultLoanTerm && <span className="text-red-500 text-sm">{errors.defaultLoanTerm.message}</span>}
+                            </FormField>
+                            
+                            <FormField label='Default Interest Rate'>
+                                <div className="relative">
+                                    <Input
+                                        {...register("defaultInterestRate", {
+                                            setValueAs: (value) => parseFloat(value) || 0
+                                        })}
+                                        type="number"
+                                        placeholder="0.04"
+                                        step="0.001"
+                                        min="0"
+                                        max="0.5"
+                                    />
+                                    <span className="absolute right-3 top-2 text-sm text-gray-500">%</span>
+                                </div>
+                                {errors.defaultInterestRate && <span className="text-red-500 text-sm">{errors.defaultInterestRate.message}</span>}
+                            </FormField>
+                            
+                            <FormField label='Min Down Payment'>
+                                <div className="relative">
+                                    <Input
+                                        {...register("minDownPayment", {
+                                            setValueAs: (value) => parseFloat(value) || 0
+                                        })}
+                                        type="number"
+                                        placeholder="0.10"
+                                        step="0.01"
+                                        min="0.01"
+                                        max="1"
+                                    />
+                                    <span className="absolute right-3 top-2 text-sm text-gray-500">%</span>
+                                </div>
+                                {errors.minDownPayment && <span className="text-red-500 text-sm">{errors.minDownPayment.message}</span>}
                             </FormField>
                         </div>
                     </div>

@@ -87,6 +87,25 @@ model Settings {
   numberFormat  String   @default("1 234,56")
   currencyDisplay String @default("symbol")
   capitalGoal   Int      @default(100000000) // Default 1,000,000 kr in øre
+
+  // SIFO living expenses (in øre per month)
+  sifoSingleAdult       Int     @default(1700000)  // 17,000 NOK
+  sifoCouple           Int     @default(2800000)  // 28,000 NOK
+  sifoChildUnder6      Int     @default(400000)   // 4,000 NOK
+  sifoChildOver6       Int     @default(600000)   // 6,000 NOK
+
+  // Loan calculation parameters (in basis points: 1% = 100 bp)
+  maxDebtRatioBp       Int     @default(500)      // 500 bp = 5.0x income
+  maxLtvRatioBp        Int     @default(8500)     // 8500 bp = 85%
+  stressTestRateBp     Int     @default(500)      // 500 bp = +5%
+  defaultLoanTerm      Int     @default(25)       // 25 years
+
+  // Standard rates (in basis points)
+  defaultInterestRateBp Int    @default(400)      // 400 bp = 4%
+
+  // Other defaults (in basis points)
+  minDownPaymentBp     Int     @default(1000)     // 1000 bp = 10%
+
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
