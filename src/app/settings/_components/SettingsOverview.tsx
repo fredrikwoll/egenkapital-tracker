@@ -1,7 +1,7 @@
 'use client'
 import { useState } from "react";
 import { EditSettingData } from "@/schemas/settings";
-import { Settings } from "@prisma/client"
+import { Settings, HouseHoldType } from "@prisma/client"
 import { useSettings, useUpdateSettings } from "../_hooks/useSettings";
 import EditSettingsForm from "./EditSettingsForm";
 import Spinner from "@/components/ui/Spinner";
@@ -108,7 +108,25 @@ const SettingsOverview = ({ initialData }: { initialData: Settings }) => {
                             </div>
                         </div>
                     </div>
-                    
+
+                    <div className="bg-card rounded-lg shadow-sm border border-gray-100 p-6">
+                        <h3 className="text-lg font-semibold text-text-primary mb-4">Household</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-md font-medium text-text-primary">Household Type</label>
+                                <p className="text-text-muted text-xl">{'householdType' in currentSettings ? (currentSettings.householdType as HouseHoldType).toLocaleString() : 'SINGEL'}</p>
+                            </div>
+                            <div>
+                                <label className="block text-md font-medium text-text-primary">Child Under 6</label>
+                                <p className="text-text-muted text-xl">{'childrenUnder6' in currentSettings ? ((currentSettings.childrenUnder6 as number)).toLocaleString() : '0'}</p>
+                            </div>
+                            <div>
+                                <label className="block text-md font-medium text-text-primary">Child Over 6</label>
+                                <p className="text-text-muted text-xl">{'childrenOver6' in currentSettings ? ((currentSettings.childrenOver6 as number)).toLocaleString() : '0'}</p>
+                            </div>
+                        </div>
+                    </div>
+
                     <div className="bg-card rounded-lg shadow-sm border border-gray-100 p-6">
                         <h3 className="text-lg font-semibold text-text-primary mb-4">SIFO Living Expenses</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

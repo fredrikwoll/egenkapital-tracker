@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { HouseholdType } from "@prisma/client";
 
 const baseSettingSchema = z.object({
     currency: z.string().min(1, "Currency is required"),
@@ -7,6 +8,11 @@ const baseSettingSchema = z.object({
     currencyDisplay: z.string().min(1, "Currency Display is required"),
     capitalGoal: z.number().min(0, "Capital goal must be positive"),
     
+    //household
+    houseHoldType: z.nativeEnum(HouseholdType),
+    childrenUnder6: z.number().min(0, "SIFO couple must be positive"),
+    childrenOver6: z.number().min(0, "SIFO child under 6 must be positive"),
+
     // SIFO living expenses (in kroner for display)
     sifoSingleAdult: z.number().min(0, "SIFO single adult must be positive"),
     sifoCouple: z.number().min(0, "SIFO couple must be positive"),

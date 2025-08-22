@@ -35,6 +35,11 @@ enum IncomeFrequency {
   YEARLY
 }
 
+enum HouseholdType {
+    SINGLE
+    COUPLE
+}
+
 model Account {
   id        String   @id @default(cuid())
   name      String
@@ -87,6 +92,11 @@ model Settings {
   numberFormat  String   @default("1 234,56")
   currencyDisplay String @default("symbol")
   capitalGoal   Int      @default(100000000) // Default 1,000,000 kr in øre
+
+  // Household composition
+  householdType        HouseholdType  @default(SINGLE)
+  childrenUnder6       Int     @default(0)
+  childrenOver6        Int     @default(0)
 
   // SIFO living expenses (in øre per month)
   sifoSingleAdult       Int     @default(1700000)  // 17,000 NOK

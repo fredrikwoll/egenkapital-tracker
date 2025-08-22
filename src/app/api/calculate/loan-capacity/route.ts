@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
 
 /* - [ ] 5x annual income rule
 - [ ] Dependent deduction
@@ -8,7 +9,7 @@ import { prisma } from "@/lib/prisma";
 /* 
 1. Inputdata
 [ ] Brutto inntekt for hver låntaker
-[ ] Eksisterende gjeld (total)
+[x] Eksisterende gjeld (total)
 [ ] Netto inntekt per måned
 [ ] Standard livsopphold (SIFO)
 [ ] Andre faste kostnader (fellesutgifter, forsikring, kommunale avgifter osv.)
@@ -46,7 +47,17 @@ import { prisma } from "@/lib/prisma";
 */
 export async function GET() {
 
+    const allSettings   = await prisma.settings.findMany({});
+    const {sifoSingleAdult, sifoCouple,sifoChildUnder6,sifoChildOver6,maxDebtRatioBp,maxLtvRatioBp,stressTestRateBp,defaultLoanTerm,defaultInterestRateBp,minDownPaymentBp} = allSettings[0];
+
     const allIncome = await prisma.income.findMany({});
+    const allDebt   = await prisma.debt.findMany({});
+
+    
+    const totalDebt = allDebt.reduce((sum, debt) => sum + debt.amount, 0);
+
+
+    return NextResponse.json({settings:{sifoSingleAdult, sifoCouple,sifoChildUnder6,sifoChildOver6,maxDebtRatioBp,maxLtvRatioBp,stressTestRateBp,defaultLoanTerm,defaultInterestRateBp,minDownPaymentBp},allIncome,totalDebt,allSettings});
     
  }
 

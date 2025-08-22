@@ -6,7 +6,7 @@ import ButtonGroup from "@/components/ui/ButtonGroup";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Settings } from "@prisma/client";
+import { Settings, HouseholdType } from "@prisma/client";
 import { EditSettingData, editSettingSchema } from "@/schemas/settings";
 
 
@@ -47,6 +47,11 @@ const currencyDisplayOptions = [
     { name: 'Code After (1,234 NOK)', value: 'code-after' },
 ];
 
+const houseHoldOptions = [
+    {name: 'Single', value: "SINGLE"},
+    {name: 'Married', value: "MARRIED"}
+]
+
 
 const EditSettingsForm = ({ settings, onSubmit, onCancel, isMobile = false }: EditSettingsFormProps) => {
     // Create fresh form instance with debt data as defaultValues
@@ -58,6 +63,11 @@ const EditSettingsForm = ({ settings, onSubmit, onCancel, isMobile = false }: Ed
             numberFormat: settings.numberFormat,
             currencyDisplay: settings.currencyDisplay,
             capitalGoal: settings.capitalGoal / 100, // Convert øre to kroner for display
+
+            //Household
+            householdType: 'householdType' in settings ? (settings.householdType as HouseholdType) : 'SINGLE',
+            childrenUnder6: 'childrenUnder6' in settings ? (settings.childrenUnder6 as number) / 100 : 4000,
+            childrenOver6: 'childrenOver6' in settings ? (settings.childrenOver6 as number) / 100 : 6000,
             
             // SIFO living expenses (convert øre to kroner for display, with defaults)
             sifoSingleAdult: 'sifoSingleAdult' in settings ? (settings.sifoSingleAdult as number) / 100 : 17000,
@@ -141,6 +151,48 @@ const EditSettingsForm = ({ settings, onSubmit, onCancel, isMobile = false }: Ed
                         </div>
                     </div>
                     
+                                        <div className="mt-8">
+                        <SectionHeader title="Household" variant="settings" size="h4" />
+                        <div className={isMobile ? 'space-y-4' : 'grid grid-cols-1 md:grid-cols-2 gap-4'}>
+                            <FormField label='Household Type'>
+                            <Select
+                                {...register("householdType")}
+                                options={houseHoldOptions}
+                            />
+                            {errors.householdType && <span className="text-red-500 text-sm">{errors.householdType.message}</span>}
+                        </FormField>
+                            
+                            <FormField label='Child Under 6 (monthly)'>
+                                <div className="relative">
+                                    <Input
+                                        {...register("childrenUnder6", {
+                                            setValueAs: (value) => parseFloat(value) || 0
+                                        })}
+                                        type="number"
+                                        placeholder="0"
+                                        step="1"
+                                    />
+                                </div>
+                                {errors.childrenUnder6 && <span className="text-red-500 text-sm">{errors.childrenUnder6.message}</span>}
+                            </FormField>
+                            
+                            <FormField label='Child Over 6 (monthly)'>
+                                <div className="relative">
+                                    <Input
+                                        {...register("childrenOver6", {
+                                            setValueAs: (value) => parseFloat(value) || 0
+                                        })}
+                                        type="number"
+                                        placeholder="0"
+                                        step="1"
+                                    />
+                                </div>
+                                {errors.childrenOver6 && <span className="text-red-500 text-sm">{errors.childrenOver6.message}</span>}
+                            </FormField>
+                        </div>
+                    </div>
+
+
                     <div className="mt-8">
                         <SectionHeader title="SIFO Living Expenses" variant="settings" size="h4" />
                         <div className={isMobile ? 'space-y-4' : 'grid grid-cols-1 md:grid-cols-2 gap-4'}>
